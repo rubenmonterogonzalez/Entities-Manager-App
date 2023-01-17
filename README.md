@@ -6,16 +6,16 @@ After a your customer have been created, you should be able to create a site, th
 
 # Dependencies used for this project
 
-[mongoose](https://mongoosejs.com/)
-[nuxt-icon](https://github.com/nuxt-modules/icon)
-[tailwindcss](https://tailwindcss.com/)
-[pinia](https://pinia.vuejs.org/)
-[dayjs](https://day.js.org/)
-[joi](https://joi.dev/api/)
-[vue-toastification](https://vue-toastification.maronato.dev/)
-[vue3-easy-data-table](https://hc200ok.github.io/vue3-easy-data-table-doc/)
-[headlessui](https://headlessui.com/)
-[vee-validate](https://vee-validate.logaretm.com/v4/)
+- [Mongoose](https://mongoosejs.com/)
+- [Nuxt-icon](https://github.com/nuxt-modules/icon)
+- [Tailwindcss](https://tailwindcss.com/)
+- [Pinia](https://pinia.vuejs.org/)
+- [Dayjs](https://day.js.org/)
+- [Joi](https://joi.dev/api/)
+- [Vue-toastification](https://vue-toastification.maronato.dev/)
+- [Vue3-easy-data-table](https://hc200ok.github.io/vue3-easy-data-table-doc/)
+- [Headlessui](https://headlessui.com/)
+- [Vee-validate](https://vee-validate.logaretm.com/v4/)
 
 # Database
 
