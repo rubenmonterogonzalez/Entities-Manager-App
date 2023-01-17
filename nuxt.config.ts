@@ -1,8 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
-    '@nuxtjs/tailwindcss'
+    '@nuxtjs/tailwindcss',
+    '@pinia/nuxt',
+    'nuxt-icon',
   ],
+  tailwindcss: {
+    cssPath: "~/assets/css/main.css",
+  },
   app: {
     head: {
       charset: 'utf-8',
@@ -17,11 +22,20 @@ export default defineNuxtConfig({
     }
   },
   runtimeConfig: {
-    mongoUrl: process.env.MONGO_URL,
+    MONGO_URL: process.env.MONGO_URL,
   },
   nitro: {
     plugins: [
-      "~/server/api/index.js",
+      "~/server/db/index.ts",
     ]
   },
+  build: {
+    transpile: [
+      "vue-toastification",
+    ],
+  },
+  typescript: {
+    shim: false,
+  },
 })
+
