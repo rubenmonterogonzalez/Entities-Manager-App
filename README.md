@@ -19,7 +19,7 @@ After a your customer have been created, you should be able to create a site, th
 
 # Database
 
-[mongoDB](https://www.mongodb.com/)
+- [MongoDB](https://www.mongodb.com/)
 
 ## Setup
 
