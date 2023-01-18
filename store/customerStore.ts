@@ -3,7 +3,7 @@ import { ICustomer } from "../types/index";
 // import { useToast } from "vue-toastification";
 import useToast from "../composables/useToast";
 
-export const customerStore = defineStore("customer-store", {
+export const useCustomerStore = defineStore("customer-store", {
   state: () => ({
     customers: [] as ICustomer[],
   }),
