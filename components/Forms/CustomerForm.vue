@@ -1,18 +1,29 @@
 <script setup>
+import { useCustomerStore } from "../../store/customerStore";
+
+const router = useRouter();
+
+const customerStore = useCustomerStore();
+
+const name = ref("");
+const email = ref("");
+const vat_number = ref("");
+
 const handleSubmit = async () => {
   const customer = {
-    fullname: fullname.value,
+    name: name.value,
     email: email.value,
-    vat_number: vat_number.value,
-  };
-  await fetch("http://localhost:3000/posts/", {
+    vat_number: vat_number.value
+  }
+
+  await customerStore.addCustomer(customer), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(customer),
-  });
-  router.push("/");
+  };
+  router.push({ path: "/site" });
 };
 
 </script>
@@ -26,7 +37,7 @@ const handleSubmit = async () => {
           <p class="text-gray-500 text-sm">Start filling these fields up</p>
         </div>
         <div class="mb-6">
-          <input v-model="fullname" type="text"
+          <input v-model="name" type="text"
             class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
             placeholder="Full Name" autocomplete="Off" required>
         </div>

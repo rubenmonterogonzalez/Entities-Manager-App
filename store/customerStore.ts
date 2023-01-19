@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ICustomer } from "../types/index";
-// import { useToast } from "vue-toastification";
-import useToast from "../composables/useToast";
+import { useToast } from "vue-toastification";
+// import useToast from "../composables/useToast";
 
 export const useCustomerStore = defineStore("customer-store", {
   state: () => ({
