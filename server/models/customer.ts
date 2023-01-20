@@ -48,7 +48,7 @@ const schema = new mongoose.Schema(
     //   required: true,
     // }
   },
-  { timestamps: true, strict: true, strictQuery: true }
+  { timestamps: true }
 );
 
 export default mongoose.model("Customer", schema, "customer");

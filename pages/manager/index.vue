@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useCustomerStore } from "../../store/customerStore";
-import type { Header, Item } from "vue3-easy-data-table";
+import type { Header} from "vue3-easy-data-table";
 import dayjs from "dayjs";
 
 import CustomerModal from "../../components/Modals/CustomerModal.vue";

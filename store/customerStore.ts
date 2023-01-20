@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { ICustomer } from "../types/index";
 import { useToast } from "vue-toastification";
-// import useToast from "../composables/useToast";
 
 export const useCustomerStore = defineStore("customer-store", {
   state: () => ({
@@ -27,7 +26,7 @@ export const useCustomerStore = defineStore("customer-store", {
         })
         .then(async () => {
           await this.getCustomers();
-          useToast().success("Customer has been created");
+          useToast().success("Customer has been created from STATE");
         });
     },
     async updateCustomer(id: string, customer: ICustomer) {
