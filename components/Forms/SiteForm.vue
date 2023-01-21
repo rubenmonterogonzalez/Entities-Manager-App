@@ -1,37 +1,29 @@
 <script lang="ts" setup>
-import { useCustomerStore } from "../../store/customerStore";
 
 const router = useRouter();
 
-const customerStore = useCustomerStore();
-
-const latitude = ref("")
-const longitude = ref("")
+const coordinates = ref({
+  latitude: "",
+  longitude: "",
+});
 const address = ref("");
 const post_code = ref("");
 
 const handleSubmit = async () => {
   const site = {
-    latitude: latitude.value,
-    longitude: longitude.value,
+    coordinates: coordinates.value,
     address: address.value,
     post_code: post_code.value
   }
 
-  await customerStore.addCustomer(site), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(site),
-  };
+  localStorage.setItem("site", JSON.stringify(site));
   router.push({ path: "/meter" });
 };
 
 </script>
 
 <template>
-  <section class="bg-gray-100 flex justify-center min-h-[86vh]">
+  <section class="bg-black flex justify-center min-h-[86vh]">
     <div class="block m-auto px-6 pb-6 pt-3 rounded-sm shadow-lg bg-white max-w-md">
       <form @submit.prevent="handleSubmit" class="min-w-[300px]">
         <div class=" my-4 text-center">
@@ -44,10 +36,10 @@ const handleSubmit = async () => {
             <p class="mb-2 text-xs text-gray-400">To check your coordinates, visit <a
                 href="https://www.maps.ie/coordinates.html" target="_blank" class="text-black underline">here</a></p>
           </label>
-          <input v-model="latitude" type="number"
+          <input v-model="coordinates.latitude" type="number"
             class="block col-span-2 w-full mb-1 px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
             placeholder="Latitude" autocomplete="Off" required>
-          <input v-model="longitude" type="number"
+          <input v-model="coordinates.longitude" type="number"
             class="block col-span-2 w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
             placeholder="Longitude" autocomplete="Off" required>
         </div>

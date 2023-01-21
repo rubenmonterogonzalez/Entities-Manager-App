@@ -1,10 +1,5 @@
 <script setup>
-import { useToast } from "vue-toastification";
-import { useCustomerStore } from "../../store/customerStore";
-
 const router = useRouter();
-
-const customerStore = useCustomerStore();
 
 const name = ref("");
 const email = ref("");
@@ -18,26 +13,17 @@ const handleSubmit = async () => {
       vat_number: vat_number.value,
     };
 
-    await customerStore.addCustomer(customer),
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(customer),
-      };
-
     localStorage.setItem("customer", JSON.stringify(customer));
     router.push({ path: "/site" });
-
   } catch (err) {
     console.log(err);
   }
 };
+
 </script>
 
 <template>
-  <section class="bg-gray-100 flex justify-center min-h-[86vh]">
+  <section class="bg-black flex justify-center min-h-[86vh]">
     <div
       class="block m-auto px-6 pb-6 pt-3 rounded-sm shadow-lg bg-white max-w-md"
     >

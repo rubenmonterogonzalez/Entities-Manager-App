@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+import defaultTheme from "tailwindcss/defaultTheme";
+
 module.exports = {
   content: [
     "./components/**/*.{js,vue,ts}",
@@ -10,11 +12,12 @@ module.exports = {
   theme: {
     extend: {},
     screens: {
-      "xs": "500px",
-      "sm": "600px",
-      "md": "768px",
-      "lg": "1024px",
+      xs: "500px",
+      ...defaultTheme.screens,
+      // "sm": "600px",
+      // "md": "768px",
+      // "lg": "1024px",
     },
   },
   plugins: [],
-}
+};
