@@ -1,3 +1,5 @@
+<script setup lang="ts"></script>
+
 <template>
   <div
     class="font-sans antialiased bg-white dark:bg-black text-black dark:text-white grid min-h-[85vh] place-content-center overflow-hidden"
@@ -22,4 +24,3 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>

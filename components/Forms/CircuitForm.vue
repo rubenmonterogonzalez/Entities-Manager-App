@@ -11,8 +11,9 @@ const handleSubmit = async () => {
   };
 
   localStorage.setItem("circuit", JSON.stringify(circuit));
-  router.push({ path: "/" });
+  router.push({ path: "/final" });
 };
+
 </script>
 
 <template>
@@ -26,22 +27,10 @@ const handleSubmit = async () => {
             Let's continue adding some fields
           </h2>
           <p class="text-gray-500 text-sm">
-            This is the STEP 2 into the process
+            This is the FINAL Step into the process
           </p>
         </div>
         <div class="grid grid-cols-2 mb-6">
-          <label for=""
-            >Coordinates GPS
-            <p class="mb-2 text-xs text-gray-400">
-              To check your coordinates, visit
-              <a
-                href="https://www.maps.ie/coordinates.html"
-                target="_blank"
-                class="text-black underline"
-                >here</a
-              >
-            </p>
-          </label>
           <input
             v-model="installation_date"
             type="date"
