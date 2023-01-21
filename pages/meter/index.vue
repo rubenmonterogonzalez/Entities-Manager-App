@@ -1,10 +1,8 @@
 <script setup lang="ts">
-
+import MeterForm from '~~/components/Forms/MeterForm.vue';
 </script>
 
 <template>
-  <div>
-    <h1>THIS IS THE METER PAGE</h1>
-  </div>
+    <MeterForm />
 </template>
 
