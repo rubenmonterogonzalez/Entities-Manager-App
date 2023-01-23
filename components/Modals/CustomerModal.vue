@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Input from "../Forms/Input/Input.vue";
-import { useCustomerStore } from "../../store/customerStore";
+import { useCustomerStore } from "../../store/index"
 import { useForm } from "vee-validate";
 import {
   Dialog,

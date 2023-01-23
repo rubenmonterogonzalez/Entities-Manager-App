@@ -9,15 +9,19 @@ const coordinates = ref({
 const address = ref("");
 const post_code = ref("");
 
-const handleSubmit = async () => {
-  const site = {
-    coordinates: coordinates.value,
-    address: address.value,
-    post_code: post_code.value
-  }
+const site = ref({
+  coordinates,
+  address,
+  post_code
+})
 
-  localStorage.setItem("site", JSON.stringify(site));
-  router.push({ path: "/meter" });
+const handleSubmit = async () => {
+  try {
+    window.localStorage.setItem("site", JSON.stringify(site.value));
+    router.push({ path: "/customer/site/meter" });
+  } catch (error) {
+    console.log(error)
+  }
 };
 
 </script>

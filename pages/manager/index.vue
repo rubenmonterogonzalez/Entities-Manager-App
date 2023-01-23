@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useCustomerStore } from "../../store/customerStore";
+import { useCustomerStore } from "../../store/index"
 import type { Header} from "vue3-easy-data-table";
 import dayjs from "dayjs";
 
@@ -53,7 +53,7 @@ const search = ref("");
     <div class="relative">
       <ClientOnly>
         <EasyDataTable :search-value="search" empty-message="No Customer Found" theme-color="#f97316"
-          table-class-name="eztble" :headers="headers" :items="customerStore.customers" alternating>
+          table-class-name="eztble" :headers="headers" :items="customerStore.newUser" alternating>
           <template #item-id="{ _id }">
             <span class="font-semibold">{{ _id }}</span>
           </template>

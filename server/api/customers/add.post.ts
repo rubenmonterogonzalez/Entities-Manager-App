@@ -1,10 +1,10 @@
-import CustomerModel from "../../models/customer";
+import CustomerModel from "../../models/newUser";
 import { CustomerSchema } from "../../validation";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
-  let { error } = CustomerSchema.validate(body);
+  // let { error } = CustomerSchema.validate(body);
   if (error) {
     throw createError({
       message: error.message.replace(/"/g, ""),

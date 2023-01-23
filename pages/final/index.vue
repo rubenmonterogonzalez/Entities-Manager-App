@@ -1,10 +1,22 @@
 <script setup lang="ts">
-const newCustomer = window.localStorage.getItem("customer")!; 
-const newSite = window.localStorage.getItem("site")!; 
-const newMeter = window.localStorage.getItem("meter")!; 
-const newCircuit = window.localStorage.getItem("circuit")!; 
+import { INewUser } from "~~/types";
+import {useCustomerStore} from "../../store/index"
+
+const customerStore = useCustomerStore();
+
+const newCustomer = JSON.parse(window.localStorage.getItem("customer")!); 
+const newSite = JSON.parse(window.localStorage.getItem("site")!); 
+const newMeter = JSON.parse(window.localStorage.getItem("meter")!); 
+const newCircuit = JSON.parse(window.localStorage.getItem("circuit")!); 
 const newUser = Object.assign(newCustomer, newSite, newMeter, newCircuit); 
+
 console.log(newUser)
+
+const addNewUser = async (newUser: INewUser) => {
+  await customerStore.addNewUser(newUser);
+};
+
+
 </script>
 
 <template>
@@ -19,10 +31,11 @@ console.log(newUser)
       >
         You finish all the process. Confirm if your data is correct.
       </p>
-      <div class="w-full flex items-center justify-center">
-        <code>{{  }}</code>
+      <div class="w-full flex flex-col items-center justify-center">
+        <pre class="w-72 mb-4 text-left">{{ newUser }}</pre>
         <NuxtLink
-          href="/customer"
+          href="/"
+          @click="addNewUser"
           class="bg-black border-2 border-white font-bold px-4 py-2 rounded-sm text-white hover:border-2 hover:border-white hover:bg-white hover:text-black"
           >Confirm</NuxtLink
         >

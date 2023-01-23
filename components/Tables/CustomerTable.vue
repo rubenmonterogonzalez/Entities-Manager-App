@@ -20,8 +20,6 @@ const items: Item[] = [
   { id: "2", fullname: "Ana Rubio", vat_number: "ES-4789374545", coordinates: { "lat": 40, "long": 35 }, address: "Triq L-Ahdar, Marsaskala", post_code: "ZTJ2502", serial_number: 879047287548157, installation_date: "25-02-2023", is_main: "No" },
 
 ];
-console.log(dayjs(items[1].installation_date).format("D-M-YY"))
-console.log(dayjs().format("D-M-YY") )
 
 
 </script>

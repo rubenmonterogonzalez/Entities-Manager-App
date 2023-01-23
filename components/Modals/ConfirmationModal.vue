@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ICustomer } from "../../types/index";
-import { useCustomerStore } from "../../store/customerStore";
+import { useCustomerStore } from "../../store/index"
 import {
   TransitionRoot,
   TransitionChild,

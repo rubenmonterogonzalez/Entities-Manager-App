@@ -4,14 +4,19 @@ const router = useRouter();
 const serial_number = ref("");
 const installation_date = ref("");
 
-const handleSubmit = async () => {
-  const meter = {
-    serial_number: serial_number.value,
-    installation_date: installation_date.value,
-  };
+const meter = ref({
+  serial_number,
+  installation_date
+})
 
-  localStorage.setItem("meter", JSON.stringify(meter));
-  router.push({ path: "/circuit" });
+const handleSubmit = async () => {
+  try {
+    window.localStorage.setItem("meter", JSON.stringify(meter.value));
+    router.push({ path: "/customer/site/meter/circuit" });
+  } catch (error) {
+    console.log(error)
+  }
+  
 };
 </script>
 

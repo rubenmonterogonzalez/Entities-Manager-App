@@ -1,4 +1,4 @@
-import CustomerModel from "../../models/customer";
+import CustomerModel from "../../models/newUser";
 import { CustomerSchema } from "../../validation";
 
 export default defineEventHandler(async (event) => {
