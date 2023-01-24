@@ -6,6 +6,7 @@ export interface ICustomer {
 }
 
 export interface ISite {
+  _id: string;
   coordinates: {
     latitude: number,
     longitude: number
@@ -15,18 +16,13 @@ export interface ISite {
 }
 
 export interface IMeter {
+  _id: string;
   serial_number: number;
   installation_date: string;
 }
 
 export interface ICircuit {
+  _id: string;
   installation_date: string;
   is_main: boolean;
-}
-
-export interface INewUser {
-  customer: ICustomer,
-  site: ISite,
-  meter: IMeter,
-  circuit: ICircuit
 }

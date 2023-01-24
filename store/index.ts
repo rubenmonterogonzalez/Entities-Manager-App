@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ICustomer, ISite, IMeter, ICircuit, INewUser } from '../types/index';
+import { ICustomer, ISite, IMeter, ICircuit} from '../types/index';
 import { useToast } from "vue-toastification";
 
 export const useCustomerStore = defineStore("customer-store", {
@@ -8,11 +8,15 @@ export const useCustomerStore = defineStore("customer-store", {
     site: [] as ISite[],
     meter: [] as IMeter[],
     circuit: [] as ICircuit[],
-    newUser: [] as INewUser[],
   }),
+  actions: {
+    addCustomer(customer: ICustomer) {
+      window.localStorage.setItem("customer", JSON.stringify(customer));
+    }
+  },
   getters: {
-    getCustomer(state) {
-      return state.customer.filter((c) => c.name)
+    getCustomer: (state) => {
+      return state.customer
     },
     // async addNewUser(newUser: INewUser) {
     //   await $fetch("/api/customers/add", {
