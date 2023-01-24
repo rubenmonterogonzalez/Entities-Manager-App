@@ -4,7 +4,14 @@ import { useToast } from "vue-toastification";
 
 export const useCustomerStore = defineStore("customer-store", {
   state: () => ({
-    customer: [] as ICustomer[],
+    customer: [
+      {
+        _id: "1", 
+        name: "Ruben", 
+        email: "ruben@ruben.com",
+        vat_number: "ES-4738972348"
+      }
+    ] as ICustomer[],
     site: [] as ISite[],
     meter: [] as IMeter[],
     circuit: [] as ICircuit[],

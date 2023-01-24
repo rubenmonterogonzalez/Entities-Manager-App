@@ -7,7 +7,7 @@ const customerStore = useCustomerStore();
 
 const router = useRouter();
 
-const _id = ref(1);
+const _id = ref("1");
 const name = ref("");
 const email = ref("");
 const vat_number = ref("");
@@ -22,7 +22,7 @@ const customer = ref({
 const handleSubmit = async () => {
   try {
     if (process.client && !nuxtApp.isHydrating) {
-      window.localStorage.setItem("customer", JSON.stringify(customer.value));
+      // window.localStorage.setItem("customer", JSON.stringify(customer.value));
       router.push({ path: "/customer/site" });
       customerStore.addCustomer(customer.value);
     }

@@ -7,6 +7,7 @@ const nuxtApp = useNuxtApp();
 
 const customerEntityModal = ref();
 
+const lastCustomer = customerStore.getCustomer.slice(-1).pop()!
 
 </script>
 
@@ -20,13 +21,13 @@ const customerEntityModal = ref();
           </h2>
         </div>
         <div class="flex mb-3">
-          <span><strong>FullName: </strong>{{  }}</span>
+          <span><strong>Name: </strong>{{ lastCustomer.name }}</span>
         </div>
         <div class="flex mb-3">
-          <span><strong>Email: </strong>{{  }}</span>
+          <span><strong>Email: </strong>{{ lastCustomer.email }}</span>
         </div>
         <div class="flex mb-3">
-          <span><strong>VAT-Number: </strong>{{  }}</span>
+          <span><strong>VAT-Number: </strong>{{ lastCustomer.vat_number }}</span>
         </div>
         <div class="flex ml-auto">
           <button
