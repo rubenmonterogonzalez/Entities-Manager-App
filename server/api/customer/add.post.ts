@@ -1,15 +1,10 @@
-import CustomerModel from "../../models/newUser";
+import CustomerModel from "../../models/customer";
 import { CustomerSchema } from "../../validation";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
-  const id = event.context.params.id;
-
-  let { error } = CustomerSchema.validate(body, {
-    abortEarly: true,
-    allowUnknown: true,
-  });
+  let { error } = CustomerSchema.validate(body);
   if (error) {
     throw createError({
       message: error.message.replace(/"/g, ""),
@@ -19,11 +14,12 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    await CustomerModel.findByIdAndUpdate(id, body);
-    return { message: "Customer has been updated" };
+    await CustomerModel.create(body);
+    return { message: "Customer has been created" };
   } catch (err: any) {
     throw createError({
       message: err.message,
     });
   }
+
 });

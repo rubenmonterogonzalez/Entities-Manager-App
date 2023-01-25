@@ -1,4 +1,4 @@
-import CustomerModel from "../../models/newUser";
+import CustomerModel from "../../models/customer";
 
 export default defineEventHandler(async (event) => {
   const id = event.context.params.id;

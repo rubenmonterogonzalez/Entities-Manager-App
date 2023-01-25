@@ -2,6 +2,7 @@
 import Input from "~~/components/Forms/Input/Input.vue";
 import { useCustomerStore } from "../../store/index"
 import { useForm } from "vee-validate";
+import { ICustomer } from '../../types/index';
 import {
   Dialog,
   DialogPanel,
@@ -11,6 +12,9 @@ import {
 } from "@headlessui/vue";
 
 const customerStore = useCustomerStore();
+
+await useAsyncData(() => customerStore.getCustomers());
+
 const customer = ref({});
 
 const { handleSubmit } = useForm({
@@ -18,19 +22,14 @@ const { handleSubmit } = useForm({
 });
 
 const submitCustomer = handleSubmit(async (values) => {
-  if (!customer.value._id) {
-    await customerStore.addCustomer({ ...values });
-    closeModal();
-  } else {
-    customerStore.updateCustomer(customer.value._id, { ...values });
-    closeModal();
-  }
+  customerStore.updateCustomer(customer.value._id, { ...values });
+  closeModal();
 });
 
 const open = ref(false);
-const openModal = (item: any) => {
-  if (item) {
-    customer.value = JSON.parse(JSON.stringify({ ...item }));
+const openModal = (customer: ICustomer) => {
+  if (customer) {
+    JSON.parse(JSON.stringify({ ...customer }));
   }
   open.value = true;
 };
@@ -59,35 +58,42 @@ defineExpose({
             enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100"
             leave-to="opacity-0 scale-95">
             <DialogPanel
-              class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              class="w-full max-w-sm transform overflow-hidden rounded-sm bg-white p-6 text-left align-middle shadow-xl transition-all">
               <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">
                 Edit CUSTOMER Entity
               </DialogTitle>
-              
-              <form @submit="submitCustomer" class="mt-5">
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+              <form @submit.prevent="submitCustomer" class="mt-5">
+                <div class="">
                   <div class="col-span-1">
-                    <Input
-                      placeholder="Full Name"
-                      rules="required"
-                      label="Full name"
-                      type="text"
-                      name="name"
-                      id="name"
+                    <Input placeholder="Name" rules="required" label="Name" type="text" name="name" id="name"
                       autocomplete="off"
-                      class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
-                    />
+                      class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none" />
                   </div>
+                  <div class="col-span-1">
+                    <Input placeholder="Email" rules="required" label="Email" type="text" name="email" id="email"
+                      autocomplete="off"
+                      class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none" />
+                  </div>
+                  <div class="col-span-1">
+                    <Input placeholder="Vat Number" rules="required" label="Vat Number" type="text" name="vat_number"
+                      id="vat_number" autocomplete="off"
+                      class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none" />
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-end space-x-3 mt-7">
+                  <button @click="closeModal()" type="button"
+                    class="bg-white border-2 border-black font-bold px-4 py-2 rounded-sm text-black hover:border-2 hover:border-black hover:bg-black hover:text-white">
+                    Cancel
+                  </button>
+                  <button type="submit"
+                    class="bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white hover:border-2 hover:border-black hover:bg-white hover:text-black">
+                    Update
+                  </button>
                 </div>
               </form>
 
-              <div class="mt-4">
-                <button type="button"
-                  class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                  @click="closeModal">
-                  Got it, thanks!
-                </button>
-              </div>
             </DialogPanel>
           </TransitionChild>
         </div>

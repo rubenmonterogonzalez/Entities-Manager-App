@@ -53,9 +53,9 @@ const search = ref("");
     <div class="relative">
       <ClientOnly>
         <EasyDataTable :search-value="search" empty-message="No Customer Found" theme-color="#f97316"
-          table-class-name="eztble" :headers="headers" :items="customerStore.newUser" alternating>
-          <template #item-id="{ _id }">
-            <span class="font-semibold">{{ _id }}</span>
+          table-class-name="eztble" :headers="headers" :items="customerStore.customer" alternating>
+          <template #item-id="{ customerId }">
+            <span class="font-semibold">{{ customerId }}</span>
           </template>
           <template #item-fullname="{ name }">
             <span>{{ name }}</span>

@@ -3,11 +3,12 @@ import CustomerEntityModal from "~~/components/Modals/CustomerEntityModal.vue"
 import { useCustomerStore } from "~~/store";
 
 const customerStore = useCustomerStore();
-const nuxtApp = useNuxtApp();
 
 const customerEntityModal = ref();
 
-const lastCustomer = customerStore.getCustomer.slice(-1).pop()!
+const customer = await useAsyncData(() => customerStore.getCustomers());
+
+const lastCostumer = JSON.parse(JSON.stringify({ ...customer.data.value?.slice(-1).pop() }))
 
 </script>
 
@@ -21,16 +22,18 @@ const lastCustomer = customerStore.getCustomer.slice(-1).pop()!
           </h2>
         </div>
         <div class="flex mb-3">
-          <span><strong>Name: </strong>{{ lastCustomer.name }}</span>
+          <span><strong>Name: </strong>{{ lastCostumer.name }}</span>
         </div>
         <div class="flex mb-3">
-          <span><strong>Email: </strong>{{ lastCustomer.email }}</span>
+          <span><strong>Email: </strong>{{ lastCostumer.email }}</span>
         </div>
         <div class="flex mb-3">
-          <span><strong>VAT-Number: </strong>{{ lastCustomer.vat_number }}</span>
+          <span><strong>VAT-Number: </strong>{{ lastCostumer.vat_number }}</span>
         </div>
         <div class="flex ml-auto">
           <button
+            type="button"
+            @click="customerEntityModal.openModal()"
             class="ml-auto bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white hover:border-2 hover:border-black hover:bg-white hover:text-black"
           >
             Edit
@@ -41,5 +44,6 @@ const lastCustomer = customerStore.getCustomer.slice(-1).pop()!
     </div>
   </section>
 
-  <CustomerEntityModal ref="customerEntityModal" />
+  <CustomerEntityModal ref="customerEntityModal"/>
 </template>
+
