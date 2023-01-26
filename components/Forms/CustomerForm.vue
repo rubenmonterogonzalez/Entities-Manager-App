@@ -1,5 +1,5 @@
 <script setup>
-import { useCustomerStore } from "~~/store";
+import { useCustomerStore } from "~~/store/customerStore";
 
 const nuxtApp = useNuxtApp();
 
@@ -23,7 +23,7 @@ const handleSubmit = async () => {
   try {
     if (process.client && !nuxtApp.isHydrating) {
       window.localStorage.setItem("customer", JSON.stringify(customer.value));
-      router.push({ path: "/customer/site" });
+      router.push({ path: "/site" });
       customerStore.addCustomer(customer.value);
     }
   } catch (error) {
@@ -42,7 +42,6 @@ const handleSubmit = async () => {
           <h2 class="font-bold text-xl max-w-[240px] m-auto leading-6 mb-2">
             CUSTOMER Entity
           </h2>
-          <p class="text-gray-500 text-sm">Start filling this up</p>
         </div>
         <div class="mb-6">
           <input v-model="name" type="text"

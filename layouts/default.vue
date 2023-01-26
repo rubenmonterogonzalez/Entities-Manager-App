@@ -5,7 +5,9 @@ import Footer from '../components/Footer.vue';
 
 <template>
   <Header />
-  <slot />
+  <main class="bg-black min-h-[86vh]">
+    <slot />
+  </main>
   <Footer />
 </template>
 

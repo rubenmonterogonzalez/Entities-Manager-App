@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 
 const schema = new mongoose.Schema(
   {
+    circuitId: {
+      type: Number
+    },
     installation_date: {
       type: Date,
       required: true

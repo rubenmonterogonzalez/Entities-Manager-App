@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Input from "~~/components/Forms/Input/Input.vue";
-import { useCustomerStore } from "../../store/index"
+import { useCustomerStore } from "../../store/customerStore"
 import { useForm } from "vee-validate";
 import { ICustomer } from '../../types/index';
 import {
@@ -26,7 +26,9 @@ const submitCustomer = handleSubmit(async (values) => {
   closeModal();
 });
 
+
 const open = ref(false);
+
 const openModal = (customer: ICustomer) => {
   if (customer) {
     JSON.parse(JSON.stringify({ ...customer }));
@@ -42,6 +44,7 @@ defineExpose({
   openModal,
   closeModal,
 });
+
 </script>
 
 <template>

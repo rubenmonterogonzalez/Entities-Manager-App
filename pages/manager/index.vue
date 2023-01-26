@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useCustomerStore } from "../../store/index"
+import { useCustomerStore } from "../../store/customerStore"
 import type { Header} from "vue3-easy-data-table";
 import dayjs from "dayjs";
 
@@ -93,7 +93,7 @@ const search = ref("");
               <button @click="customerModal.openModal(customer)">
                 <Icon size="18" name="simple-line-icons:pencil" />
               </button>
-              <button @click="confirmationModal.openModal()">
+              <button @click="confirmationModal.openModal(customer)">
                 <Icon size="18" name="simple-line-icons:trash" />
               </button>
               <!-- <button @click="deleteCustomer(customer)">

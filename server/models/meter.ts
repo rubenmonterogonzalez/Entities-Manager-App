@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 
 const schema = new mongoose.Schema(
   {
+    meterId: {
+      type: Number
+    },
     serial_number: {
       type: Number,
       required: true,

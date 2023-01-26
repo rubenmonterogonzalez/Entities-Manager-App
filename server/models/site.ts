@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 
 const schema = new mongoose.Schema(
   {
+    siteId: {
+      type: Number
+    },
     coordinates: {
       latitude: {
         type: Number,
