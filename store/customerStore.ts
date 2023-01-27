@@ -7,6 +7,15 @@ export const useCustomerStore = defineStore("customer-store", {
     customer: [] as ICustomer[],
   }),
   actions: {
+    async getCustomers() {
+      try {
+        let data = await $fetch<ICustomer[]>("/api/customer");
+        this.customer = data;
+        return data as ICustomer[];
+      } catch (error: any) {
+        useToast().error(error.message);
+      }
+    },
     async addCustomer(customer: ICustomer) {
       try {
         await $fetch("/api/customer/add", {
@@ -22,15 +31,6 @@ export const useCustomerStore = defineStore("customer-store", {
         async () => {
           await this.getCustomers();
         }
-      }
-    },
-    async getCustomers() {
-      try {
-        let data = await $fetch<ICustomer[]>("/api/customer");
-        this.customer = data;
-        return data as ICustomer[];
-      } catch (error: any) {
-        useToast().error(error.message);
       }
     },
     async updateCustomer(id: string, customer: ICustomer) {

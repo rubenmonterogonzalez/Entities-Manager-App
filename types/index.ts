@@ -1,5 +1,5 @@
 export interface ICustomer {
-  _id: string;
+  _id?: string;
   customerId: number;
   name: string;
   email: string;
@@ -7,7 +7,7 @@ export interface ICustomer {
 }
 
 export interface ISite {
-  _id: string;
+  _id?: string;
   siteId: number;
   coordinates: {
     latitude: number,
@@ -18,14 +18,14 @@ export interface ISite {
 }
 
 export interface IMeter {
-  _id: string;
+  _id?: string;
   meterId: number;
   serial_number: number;
   installation_date: string;
 }
 
 export interface ICircuit {
-  _id: string;
+  _id?: string;
   circuitId: number;
   installation_date: string;
   is_main: boolean;

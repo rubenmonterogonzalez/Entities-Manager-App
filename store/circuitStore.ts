@@ -7,6 +7,15 @@ export const useCircuitStore = defineStore("circuit-store", {
     circuit: [] as ICircuit[],
   }),
   actions: {
+    async getCircuits() {
+      try {
+        let data = await $fetch<ICircuit[]>("/api/circuit");
+        this.circuit = data;
+        return data as ICircuit[];
+      } catch (error: any) {
+        useToast().error(error.message);
+      }
+    },
     async addCircuit(circuit: ICircuit) {
       try {
         await $fetch("/api/circuit/add", {
@@ -22,15 +31,6 @@ export const useCircuitStore = defineStore("circuit-store", {
         async () => {
           await this.getCircuits();
         }
-      }
-    },
-    async getCircuits() {
-      try {
-        let data = await $fetch<ICircuit[]>("/api/circuit");
-        this.circuit = data;
-        return data as ICircuit[];
-      } catch (error: any) {
-        useToast().error(error.message);
       }
     },
     async updateCircuit(id: string, circuit: ICircuit) {

@@ -7,6 +7,15 @@ export const useMeterStore = defineStore("meter-store", {
     meter: [] as IMeter[],
   }),
   actions: {
+    async getMeters() {
+      try {
+        let data = await $fetch<IMeter[]>("/api/meter");
+        this.meter = data;
+        return data as IMeter[];
+      } catch (error: any) {
+        useToast().error(error.message);
+      }
+    },
     async addMeter(meter: IMeter) {
       try {
         await $fetch("/api/meter/add", {
@@ -22,15 +31,6 @@ export const useMeterStore = defineStore("meter-store", {
         async () => {
           await this.getMeters();
         }
-      }
-    },
-    async getMeters() {
-      try {
-        let data = await $fetch<IMeter[]>("/api/meter");
-        this.meter = data;
-        return data as IMeter[];
-      } catch (error: any) {
-        useToast().error(error.message);
       }
     },
     async updateMeter(id: string, meter: IMeter) {

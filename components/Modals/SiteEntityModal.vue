@@ -15,14 +15,16 @@ const siteStore = useSiteStore();
 
 await useAsyncData(() => siteStore.getSites());
 
-const site = ref({});
+const site = ref({
+  siteId, coordinates, address, post_code
+});
 
 const { handleSubmit } = useForm({
   initialValues: site,
 });
 
 const submitSite = handleSubmit(async (values) => {
-  siteStore.updateSite(site.value._id, { ...values });
+  await siteStore.addSite({ ...values});
   closeModal();
 });
 

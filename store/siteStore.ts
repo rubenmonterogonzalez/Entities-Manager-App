@@ -7,6 +7,15 @@ export const useSiteStore = defineStore("site-store", {
     site: [] as ISite[],
   }),
   actions: {
+    async getSites() {
+      try {
+        let data = await $fetch<ISite[]>("/api/site");
+        this.site = data;
+        return data as ISite[];
+      } catch (error: any) {
+        useToast().error(error.message);
+      }
+    },
     async addSite(site: ISite) {
       try {
         await $fetch("/api/site/add", {
@@ -22,15 +31,6 @@ export const useSiteStore = defineStore("site-store", {
         async () => {
           await this.getSites();
         }
-      }
-    },
-    async getSites() {
-      try {
-        let data = await $fetch<ISite[]>("/api/site");
-        this.site = data;
-        return data as ISite[];
-      } catch (error: any) {
-        useToast().error(error.message);
       }
     },
     async updateSite(id: string, site: ISite) {

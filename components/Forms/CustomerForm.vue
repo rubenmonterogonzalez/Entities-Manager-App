@@ -22,7 +22,7 @@ const customer = ref({
 const handleSubmit = async () => {
   try {
     if (process.client && !nuxtApp.isHydrating) {
-      window.localStorage.setItem("customer", JSON.stringify(customer.value));
+      // window.localStorage.setItem("customer", JSON.stringify(customer.value));
       router.push({ path: "/site" });
       customerStore.addCustomer(customer.value);
     }
