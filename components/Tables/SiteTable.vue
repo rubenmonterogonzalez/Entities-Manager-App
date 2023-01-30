@@ -22,7 +22,7 @@ const headers: Header[] = [
 
 const siteStore = useSiteStore();
 
-await useAsyncData(() => siteStore.getSites());
+const sites = await useAsyncData(() => siteStore.getSites());
 
 const search = ref("");
 
@@ -43,17 +43,6 @@ const site = ref({
   post_code,
 });
 
-/* MODAL */
-// const { handleSubmit } = useForm({
-//   initialValues: site,
-// });
-
-// const submitSite = handleSubmit(async () => {
-//   await siteStore.addSite( site.value);
-//   closeModal();
-//   router.push({ path: "/meter" });
-// });
-
 const handleSubmit = async () => {
   try {
     await siteStore.addSite(site.value);
@@ -73,6 +62,15 @@ const closeModal = () => {
   // site.value = {};
   open.value = false;
 };
+
+/* SELECT OPTION */
+const selected = ref("")
+const options = JSON.parse(JSON.stringify(sites.data.value))
+
+const onSelectChange = (event) => {
+  selected.value = event.target.value
+}
+
 </script>
 
 <template>
@@ -185,7 +183,7 @@ const closeModal = () => {
                 as="h3"
                 class="mb-6 text-lg font-medium leading-6 text-gray-900"
               >
-                Create a SITE Entity
+                Create a new SITE Entity
               </DialogTitle>
 
               <form @submit.prevent="handleSubmit" class="min-w-[300px]">
@@ -233,12 +231,23 @@ const closeModal = () => {
                     required
                   />
                 </div>
+
+                <h2 class="mb-6 text-lg font-medium leading-6 text-gray-900">Either choose one created</h2>
+
+                <select name="site" @change="onSelectChange($event)" v-model="selected" class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none">
+                  <option disabled value="">Please select one</option>
+                  <option v-for="option in options" :value="JSON.stringify(option.siteId)">
+                    {{ option.siteId}} - {{option.address}}
+                  </option>
+                </select>
+
                 <button
                   type="submit"
-                  class="w-full px-6 py-2 bg-black border-2 border-black font-semibold text-white leading-tight rounded-sm shadow-md hover:border-2 hover:border-black hover:bg-white hover:shadow-lg hover:text-black transition duration-150 ease-in-out"
+                  class="w-full px-6 py-2 mt-6 bg-black border-2 border-black font-semibold text-white leading-tight rounded-sm shadow-md hover:border-2 hover:border-black hover:bg-white hover:shadow-lg hover:text-black transition duration-150 ease-in-out"
                 >
                   Submit
                 </button>
+                <p>{{selected}}</p>
               </form>
             </DialogPanel>
           </TransitionChild>
