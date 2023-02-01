@@ -18,7 +18,11 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
-    MONGO_URL: process.env.MONGO_URL,
+    // MONGO_URL: process.env.MONGO_URL,
+    DB_HOST: process.env.DB_HOST,
+    DB_USER: process.env.DB_USER,
+    DB_PASSWORD: process.env.DB_PASSWORD,
+    DB_NAME: process.env.DB_NAME
   },
   nitro: {
     plugins: ["~/server/db/index.ts"],
