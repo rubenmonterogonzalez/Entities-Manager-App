@@ -1,20 +1,21 @@
-import CustomerModel from "../../models/customer";
+import Customer from "../../models/customer";
 import { CustomerSchema } from "../../validation";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
-  let { error } = CustomerSchema.validate(body);
-  if (error) {
-    throw createError({
-      message: error.message.replace(/"/g, ""),
-      statusCode: 400,
-      fatal: false,
-    });
-  }
+  // let { error } = CustomerSchema.validate(body);
+  // if (error) {
+  //   throw createError({
+  //     message: error.message.replace(/"/g, ""),
+  //     statusCode: 400,
+  //     fatal: false,
+  //   });
+  // }
 
   try {
-    await CustomerModel.create(body);
+    // await Customer.sync({ alter: true })
+    await Customer.create(body);
     return { message: "Customer has been created" };
   } catch (err: any) {
     throw createError({

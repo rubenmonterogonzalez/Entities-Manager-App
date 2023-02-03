@@ -1,7 +1,12 @@
-import CustomerModel from "../../models/customer";
+import Customer from "../../models/customer";
+
+// export default defineEventHandler(async (event) => {
+//   return await Customer.find(); 
+// });
 
 export default defineEventHandler(async (event) => {
-  return await CustomerModel.find(); 
+  const customers = await Customer.findAll(); 
+  return customers;
 });
 
 

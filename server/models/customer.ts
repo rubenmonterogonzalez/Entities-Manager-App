@@ -25,97 +25,36 @@
 
 // export default mongoose.model("Customer", schema, "customer");
 
-import {Sequelize} from 'sequelize';
 
-const sequelize = new Sequelize(process.env.DATABASE_URL);
+import { Sequelize, DataTypes } from "sequelize";
+const sequelize = new Sequelize('entities_manager', 'root', '1234', {
+  host: 'localhost',
+  dialect: 'mysql',
+});
 
-const Customer = sequelize.define('Customer', {
+const Customer = sequelize.define("customer", {
   id: {
-    type: Sequelize.STRING,
+    type: DataTypes.INTEGER,
     primaryKey: true,
-    defaultValue: Sequelize.fn('cuid')
+    autoIncrement: true,
+    // defaultValue: sequelize.fn("cuid"),
+  },
+  name: {
+    type: DataTypes.STRING,
   },
   email: {
-    type: Sequelize.STRING,
-    unique: true
+    type: DataTypes.STRING,
+    unique: true,
   },
   vat_number: {
-    type: Sequelize.STRING,
-    unique: true
+    type: DataTypes.STRING,
+    unique: true,
   },
-  name: {
-    type: Sequelize.STRING
-  }
-});
+},
+{freezeTableName: true}
+);
 
-const Site = sequelize.define('Site', {
-  id: {
-    type: Sequelize.STRING,
-    primaryKey: true,
-    defaultValue: Sequelize.fn('cuid')
-  },
-  address: {
-    type: Sequelize.STRING
-  },
-  post_code: {
-    type: Sequelize.STRING
-  },
-  name: {
-    type: Sequelize.STRING
-  },
-  coordinates: {
-    type: Sequelize.STRING
-  },
-  customerId: {
-    type: Sequelize.STRING
-  }
-});
+// await Customer.sync({ alter: true })
+export default Customer;
 
-const Meter = sequelize.define('Meter', {
-  id: {
-    type: Sequelize.STRING,
-    primaryKey: true,
-    defaultValue: Sequelize.fn('cuid')
-  },
-  installation_date: {
-    type: Sequelize.DATE
-  },
-  serial_number: {
-    type: Sequelize.STRING,
-    unique: true
-  },
-  name: {
-    type: Sequelize.STRING
-  },
-  siteId: {
-    type: Sequelize.STRING
-  }
-});
-
-const Circuit = sequelize.define('Circuit', {
-  id: {
-    type: Sequelize.STRING,
-    primaryKey: true,
-    defaultValue: Sequelize.fn('cuid')
-  },
-  installation_date: {
-    type: Sequelize.DATE
-  },
-  is_main: {
-    type: Sequelize.BOOLEAN
-  },
-  name: {
-    type: Sequelize.STRING
-  },
-  meterId: {
-    type: Sequelize.STRING
-  }
-});
-
-Customer.hasMany(Site, { foreignKey: 'customerId' });
-Site.belongsTo(Customer, { foreignKey: 'customerId' });
-Site.hasMany(Meter, { foreignKey: 'siteId' });
-Meter.belongsTo(Site, { foreignKey: 'siteId' });
-Meter.hasMany(Circuit, { foreignKey: 'meterId' });
-Circuit.belongsTo(Meter, { foreignKey: 'meterId' });
 

@@ -21,7 +21,7 @@ type NitroWithMysql = Nitro & {
   mysql: Connection;
 };
 
-export default async (_nitroApp: NitroWithMysql) => {
+export const db = async (_nitroApp: NitroWithMysql) => {
   try {
     const connection = mysql.createConnection({
       host: config.DB_HOST,
@@ -37,4 +37,4 @@ export default async (_nitroApp: NitroWithMysql) => {
 };
 
 
-
+export default db;

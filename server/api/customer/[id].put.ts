@@ -1,4 +1,4 @@
-import CustomerModel from "../../models/customer";
+import Customer from "../../models/customer";
 import { CustomerSchema } from "../../validation";
 
 export default defineEventHandler(async (event) => {
@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    await CustomerModel.findByIdAndUpdate(id, body);
+    await Customer.update(id, body);
     return { message: "Customer has been updated" };
   } catch (err: any) {
     throw createError({
@@ -27,3 +27,16 @@ export default defineEventHandler(async (event) => {
     });
   }
 });
+
+// const updateCustomer = async (id, data) => {
+//   try {
+//     const updatedCustomer = await Customer.update(data, {
+//       where: { id: id },
+//       returning: true,
+//       plain: true,
+//     });
+//     return updatedCustomer;
+//   } catch (err) {
+//     throw err;
+//   }
+// };
