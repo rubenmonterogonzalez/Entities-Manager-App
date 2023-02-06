@@ -1,32 +1,34 @@
 export interface ICustomer {
-  _id?: string;
-  customerId: number;
+  id?: string;
   name: string;
   email: string;
   vat_number: string;
 }
 
 export interface ISite {
-  _id?: string;
-  siteId: number;
+  id?: string;
+  name: string;
+  address: string;
+  post_code: string;
   coordinates: {
     latitude: number,
     longitude: number
   };
-  address: string;
-  post_code: string;
+  customerId?: number;
 }
 
 export interface IMeter {
-  _id?: string;
-  meterId: number;
-  serial_number: number;
+  id?: string;
+  name: string;
   installation_date: string;
+  serial_number: number;
+  siteId?: number;
 }
 
 export interface ICircuit {
-  _id?: string;
-  circuitId: number;
+  id?: string;
+  name: string;
   installation_date: string;
   is_main: boolean;
+  meterId?: number;
 }

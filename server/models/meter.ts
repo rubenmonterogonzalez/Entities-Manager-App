@@ -1,35 +1,16 @@
-// import mongoose from "mongoose";
-
-// const schema = new mongoose.Schema(
-//   {
-//     meterId: {
-//       type: Number
-//     },
-//     serial_number: {
-//       type: Number,
-//       required: true,
-//       unique: true,
-//     },
-//     installation_date: {
-//       type: Date,
-//       required: true
-//     },
-//   },
-// );
-
-// export default mongoose.model("Meter", schema, "meter");
 import { Sequelize, DataTypes } from "sequelize";
 import Site from './site'
-const sequelize = new Sequelize('database', 'username', 'password', {
+const sequelize = new Sequelize('entities_manager', 'root', '1234', {
   host: 'localhost',
-  dialect: 'mysql'
+  dialect: 'mysql',
 });
 
 const Meter = sequelize.define("meter", {
   id: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     primaryKey: true,
-    defaultValue: sequelize.fn("cuid"),
+    autoIncrement: true,
+    // defaultValue: sequelize.fn("cuid"),
   },
   installation_date: {
     type: DataTypes.DATE,
@@ -42,13 +23,20 @@ const Meter = sequelize.define("meter", {
     type: DataTypes.STRING,
   },
   siteId: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
   },
+},
+  { freezeTableName: true }
+);
+
+Site.hasMany(Meter, { 
+  as: 'meter', foreignKey: 'siteId'
 });
 
 Meter.belongsTo(Site, {
-  foreignKey: "siteId",
-  as: "site",
+  as: 'site', foreignKey: 'siteId' 
 });
+
+Meter.sync({ force: false })
 
 export default Meter;

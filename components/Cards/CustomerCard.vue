@@ -26,9 +26,9 @@ const { handleSubmit } = useForm({
 });
 
 const submitCustomer = handleSubmit(async (values) => {
-  await customerStore.updateCustomer(lastCustomer._id, { ...values });
+  await customerStore.updateCustomer(lastCustomer.id, { ...values });
   /* Updates Card with New State */
-  lastCustomer = customerStore.getCustomer[0];
+  lastCustomer = customerStore.customer[customerStore.customer.length -1];
   closeModal();
 });
 

@@ -1,11 +1,10 @@
 import Joi from "joi";
 
-export const CustomerSchema = Joi.object({
-  // customerId: Joi.number(),
-  name: Joi.string().min(4).required(),
-  email: Joi.string().min(10).required(),
-  vat_number: Joi.string().min(8).required(),
-});
+// export const CustomerSchema = Joi.object({
+//   name: Joi.string().min(4).required(),
+//   email: Joi.string().min(10).required(),
+//   vat_number: Joi.string().min(8).required(),
+// });
 
 export const SiteSchema = Joi.object({
   siteId: Joi.number(),

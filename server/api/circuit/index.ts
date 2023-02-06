@@ -1,5 +1,6 @@
-import CircuitModel from "../../models/circuit";
+import Circuit from "../../models/circuit";
 
 export default defineEventHandler(async (event) => {
-  return await CircuitModel.find();
+  const circuits = await Circuit.findAll();
+  return circuits;
 });

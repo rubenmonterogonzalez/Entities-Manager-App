@@ -54,8 +54,8 @@ const search = ref("");
       <ClientOnly>
         <EasyDataTable :search-value="search" empty-message="No Customer Found" theme-color="#f97316"
           table-class-name="eztble" :headers="headers" :items="customerStore.customer" alternating>
-          <template #item-id="{ customerId }">
-            <span class="font-semibold">{{ customerId }}</span>
+          <template #item-id="{ id }">
+            <span class="font-semibold">{{ id }}</span>
           </template>
           <template #item-fullname="{ name }">
             <span>{{ name }}</span>

@@ -13,12 +13,14 @@ import {
 
 /* TABLE */
 const headers: Header[] = [
-  { text: "ID", value: "siteId", width: 25 },
-  { text: "LATITUDE", value: "coordinates.latitude", width: 25 },
-  { text: "LONGITUDE", value: "coordinates.longitude", width: 25 },
+  { text: "ID", value: "id", width: 25 },
+  { text: "NAME", value: "name", width: 100 },
   { text: "ADDRESS", value: "address", width: 150 },
   { text: "POST CODE", value: "post_code", width: 100 },
+  { text: "LATITUDE", value: "coordinates", width: 25 },
+  { text: "LONGITUDE", value: "coordinates.longitude", width: 25 },
 ];
+
 
 const siteStore = useSiteStore();
 
@@ -29,6 +31,7 @@ const search = ref("");
 /* FORM */
 const router = useRouter();
 
+const name = ref("");
 const coordinates = ref({
   latitude: 0,
   longitude: 0,
@@ -37,11 +40,13 @@ const address = ref("");
 const post_code = ref("");
 
 const site = ref({
-  siteId: siteStore.getSite.length + 1,
+  name,
   coordinates,
   address,
   post_code,
 });
+
+console.log(JSON.parse(sites.data.value[0].coordinates))
 
 const handleSubmit = async () => {
   try {
@@ -67,7 +72,7 @@ const closeModal = () => {
 const selected = ref("")
 const options = JSON.parse(JSON.stringify(sites.data.value))
 
-const onSelectChange = (event) => {
+const onSelectChange = (event: any) => {
   selected.value = event.target.value
 }
 
@@ -76,32 +81,17 @@ const onSelectChange = (event) => {
 <template>
   <main class="bg-black min-h-[86vh] px-5 mx-auto pt-12">
     <div
-      class="bg-white border-[1px] border-gray-300 flex flex-col items-center justify-between mt-5 px-4 py-2 space-y-2 xs:space-y-0 xs:flex-row"
-    >
-      <div
-        class="relative w-full md:mr-10 grow max-w-7xl flex justify-center xs:justify-start"
-      >
+      class="bg-white border-[1px] border-gray-300 flex flex-col items-center justify-between mt-5 px-4 py-2 space-y-2 xs:space-y-0 xs:flex-row">
+      <div class="relative w-full md:mr-10 grow max-w-7xl flex justify-center xs:justify-start">
         <span class="absolute -translate-y-1/2 top-4 left-64">
-          <Icon
-            name="simple-line-icons:magnifier"
-            size="18"
-            class="text-gray-400"
-          />
+          <Icon name="simple-line-icons:magnifier" size="18" class="text-gray-400" />
         </span>
-        <input
-          placeholder="Search..."
-          v-model="search"
-          type="text"
-          name="search"
-          autocomplete="off"
-          class="border-[1px] border-gray-300 outline-none px-5 py-2 rounded-sm text-sm w-72 placeholder:text-sm"
-        />
+        <input placeholder="Search..." v-model="search" type="text" name="search" autocomplete="off"
+          class="border-[1px] border-gray-300 outline-none px-5 py-2 rounded-sm text-sm w-72 placeholder:text-sm" />
       </div>
       <div>
-        <button
-          @click="openModal"
-          class="bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white text-sm whitespace-nowrap hover:border-2 hover:border-black hover:bg-white hover:text-black"
-        >
+        <button @click="openModal"
+          class="bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white text-sm whitespace-nowrap hover:border-2 hover:border-black hover:bg-white hover:text-black">
           New SITE Entity
         </button>
       </div>
@@ -109,23 +99,13 @@ const onSelectChange = (event) => {
 
     <div class="relative">
       <ClientOnly>
-        <EasyDataTable
-          :search-value="search"
-          empty-message="No Site Found. Create new Site"
-          theme-color="#f97316"
-          table-class-name="eztble"
-          :headers="headers"
-          :items="siteStore.site"
-          alternating
-        >
-          <template #item-id="{ siteId }">
-            <span>{{ siteId }}</span>
+        <EasyDataTable :search-value="search" empty-message="No Site Found. Create new Site" theme-color="#f97316"
+          table-class-name="eztble" :headers="headers" :items="siteStore.site" alternating>
+          <template #item-id="{ id }">
+            <span>{{ id }}</span>
           </template>
-          <template #item-latitude="{ coordinates }">
-            <span>{{ coordinates.latitude }}</span>
-          </template>
-          <template #item-longitude="{ coordinates }">
-            <span>{{ coordinates.longitude }}</span>
+          <template #item-name="{ name }">
+            <span>{{ name }}</span>
           </template>
           <template #item-address="{ address }">
             <span>{{ address }}</span>
@@ -133,17 +113,12 @@ const onSelectChange = (event) => {
           <template #item-post_code="{ post_code }">
             <span>{{ post_code }}</span>
           </template>
-
-          <!-- <template #item-actions="site">
-            <div class="flex space-x-4 text-gray-500">
-              <button @click="openModal()">
-                <Icon size="18" name="simple-line-icons:pencil" />
-              </button>
-              <button @click="openModal()">
-                <Icon size="18" name="simple-line-icons:trash" />
-              </button>
-            </div>
-          </template> -->
+          <template #item-latitude="{ coordinates }">
+            <span>{{ coordinates.latitude }}</span>
+          </template>
+          <template #item-longitude="{ coordinates }">
+            <span>{{ coordinates.longitude }}</span>
+          </template>
         </EasyDataTable>
       </ClientOnly>
     </div>
@@ -151,103 +126,69 @@ const onSelectChange = (event) => {
 
   <TransitionRoot :show="open" as="template">
     <Dialog as="div" @close="closeModal" class="relative z-10">
-      <TransitionChild
-        as="template"
-        enter="duration-300 ease-out"
-        enter-from="opacity-0"
-        enter-to="opacity-100"
-        leave="duration-200 ease-in"
-        leave-from="opacity-100"
-        leave-to="opacity-0"
-      >
+      <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
+        leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
         <div class="fixed inset-0 bg-black bg-opacity-25" />
       </TransitionChild>
 
       <div class="fixed inset-0 overflow-y-auto">
-        <div
-          class="flex min-h-full items-center justify-center p-4 text-center"
-        >
-          <TransitionChild
-            as="template"
-            enter="duration-300 ease-out"
-            enter-from="opacity-0 scale-95"
-            enter-to="opacity-100 scale-100"
-            leave="duration-200 ease-in"
-            leave-from="opacity-100 scale-100"
-            leave-to="opacity-0 scale-95"
-          >
+        <div class="flex min-h-full items-center justify-center p-4 text-center">
+          <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95"
+            enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100"
+            leave-to="opacity-0 scale-95">
             <DialogPanel
-              class="w-full max-w-sm transform overflow-hidden rounded-sm bg-white p-6 text-left align-middle shadow-xl transition-all"
-            >
-              <DialogTitle
-                as="h3"
-                class="mb-6 text-lg font-medium leading-6 text-gray-900"
-              >
+              class="w-full max-w-sm transform overflow-hidden rounded-sm bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <DialogTitle as="h3" class="mb-6 text-lg font-medium leading-6 text-gray-900">
                 Create a new SITE Entity
               </DialogTitle>
 
               <form @submit.prevent="handleSubmit" class="min-w-[300px]">
                 <div class="my-4 text-center">
                 </div>
+
+                <div class="mb-6">
+                  <input v-model="name" type="text"
+                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+                    placeholder="Name" autocomplete="Off" required />
+                </div>
+                <div class="mb-6">
+                  <input v-model="address" type="text"
+                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+                    placeholder="Address" autocomplete="Off" required />
+                </div>
+                <div class="mb-6">
+                  <input v-model="post_code" type="text"
+                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+                    placeholder="Post Code" autocomplete="Off" required />
+                </div>
                 <div class="mb-6">
                   <label>Latitude</label>
-                  <input
-                    v-model="coordinates.latitude"
-                    type="number"
+                  <input v-model="coordinates.latitude" type="number"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
-                    placeholder="Latitude"
-                    autocomplete="Off"
-                    required
-                  />
+                    placeholder="Latitude" autocomplete="Off" required />
                 </div>
                 <div class="mb-6">
                   <label>Longitude</label>
-                  <input
-                    v-model="coordinates.longitude"
-                    type="number"
+                  <input v-model="coordinates.longitude" type="number"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
-                    placeholder="Longitude"
-                    autocomplete="Off"
-                    required
-                  />
-                </div>
-                <div class="mb-6">
-                  <input
-                    v-model="address"
-                    type="text"
-                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
-                    placeholder="Address"
-                    autocomplete="Off"
-                    required
-                  />
-                </div>
-                <div class="mb-6">
-                  <input
-                    v-model="post_code"
-                    type="text"
-                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
-                    placeholder="Post Code"
-                    autocomplete="Off"
-                    required
-                  />
+                    placeholder="Longitude" autocomplete="Off" required />
                 </div>
 
                 <h2 class="mb-6 text-lg font-medium leading-6 text-gray-900">Either choose one created</h2>
 
-                <select name="site" @change="onSelectChange($event)" v-model="selected" class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none">
+                <select name="site" @change="onSelectChange($event)" v-model="selected"
+                  class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none">
                   <option disabled value="">Please select one</option>
                   <option v-for="option in options" :value="JSON.stringify(option.siteId)">
-                    {{ option.siteId}} - {{option.address}}
+                    {{ option.siteId }} - {{ option.address }}
                   </option>
                 </select>
 
-                <button
-                  type="submit"
-                  class="w-full px-6 py-2 mt-6 bg-black border-2 border-black font-semibold text-white leading-tight rounded-sm shadow-md hover:border-2 hover:border-black hover:bg-white hover:shadow-lg hover:text-black transition duration-150 ease-in-out"
-                >
+                <button type="submit"
+                  class="w-full px-6 py-2 mt-6 bg-black border-2 border-black font-semibold text-white leading-tight rounded-sm shadow-md hover:border-2 hover:border-black hover:bg-white hover:shadow-lg hover:text-black transition duration-150 ease-in-out">
                   Submit
                 </button>
-                <p>{{selected}}</p>
+                <p>{{ selected }}</p>
               </form>
             </DialogPanel>
           </TransitionChild>

@@ -1,5 +1,6 @@
-import MeterModel from "../../models/meter";
+import Meter from "../../models/meter";
 
 export default defineEventHandler(async (event) => {
-  return await MeterModel.find();
+  const meters = await Meter.findAll();
+  return meters;
 });

@@ -1,45 +1,19 @@
-// import mongoose from "mongoose";
-
-// const schema = new mongoose.Schema(
-//   {
-//     siteId: {
-//       type: Number
-//     },
-//     coordinates: {
-//       latitude: {
-//         type: Number,
-//         required: true
-//       },
-//       longitude: {
-//         type: Number,
-//         required: true
-//       }
-//     },
-//     address: {
-//       type: String,
-//       required: true,
-//     },
-//     post_code: {
-//       type: String,
-//       required: true,
-//     },
-//   },
-// );
-
-// export default mongoose.model("Site", schema, "site");
-
 import { Sequelize, DataTypes } from "sequelize";
 import Customer from './customer';
-const sequelize = new Sequelize('database', 'username', 'password', {
+const sequelize = new Sequelize('entities_manager', 'root', '1234', {
   host: 'localhost',
-  dialect: 'mysql'
+  dialect: 'mysql',
 });
 
 const Site = sequelize.define("site", {
   id: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     primaryKey: true,
-    defaultValue: sequelize.fn("cuid"),
+    autoIncrement: true,
+    // defaultValue: sequelize.fn("cuid"),
+  },
+  name: {
+    type: DataTypes.STRING,
   },
   address: {
     type: DataTypes.STRING,
@@ -47,20 +21,24 @@ const Site = sequelize.define("site", {
   post_code: {
     type: DataTypes.STRING,
   },
-  name: {
-    type: DataTypes.STRING,
-  },
   coordinates: {
-    type: DataTypes.STRING,
+    type: DataTypes.JSON,
   },
   customerId: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
   },
+},
+  { freezeTableName: true }
+);
+
+Customer.hasMany(Site, { 
+  as: 'site', foreignKey: 'customerId'
 });
 
-Site.belongsTo(Customer, {
-  foreignKey: "customerId",
-  as: "customer",
+Site.belongsTo(Customer, { 
+  as: 'customer', foreignKey: 'customerId' 
 });
+
+Site.sync({ force: false })
 
 export default Site;

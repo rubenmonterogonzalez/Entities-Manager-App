@@ -1,10 +1,19 @@
-import MeterModel from "../../models/meter";
+import Meter from "../../models/meter";
 
 export default defineEventHandler(async (event) => {
   const id = event.context.params.id;
 
   try {
-    await MeterModel.findByIdAndDelete(id);
+    const meter = await Meter.findByPk(id);
+
+    if (!meter) {
+      throw createError({
+        message: "No meter found with the given id",
+        statusCode: 404,
+        fatal: false,
+      });
+    }
+    await meter.destroy();
     return { message: "Meter has been deleted" };
   } catch (err: any) {
     throw createError({

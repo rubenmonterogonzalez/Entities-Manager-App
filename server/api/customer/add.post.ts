@@ -1,5 +1,5 @@
 import Customer from "../../models/customer";
-import { CustomerSchema } from "../../validation";
+// import { CustomerSchema } from "../../validation";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -14,7 +14,6 @@ export default defineEventHandler(async (event) => {
   // }
 
   try {
-    // await Customer.sync({ alter: true })
     await Customer.create(body);
     return { message: "Customer has been created" };
   } catch (err: any) {
@@ -22,5 +21,4 @@ export default defineEventHandler(async (event) => {
       message: err.message,
     });
   }
-
 });

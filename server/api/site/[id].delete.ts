@@ -1,10 +1,19 @@
-import SiteModel from "../../models/site";
+import Site from "../../models/site";
 
 export default defineEventHandler(async (event) => {
   const id = event.context.params.id;
 
   try {
-    await SiteModel.findByIdAndDelete(id);
+    const site = await Site.findByPk(id);
+
+    if (!site) {
+      throw createError({
+        message: "No site found with the given id",
+        statusCode: 404,
+        fatal: false,
+      });
+    }
+    await site.destroy();
     return { message: "Site has been deleted" };
   } catch (err: any) {
     throw createError({

@@ -1,31 +1,3 @@
-// import mongoose from "mongoose";
-
-// const schema = new mongoose.Schema(
-//   {
-//     customerId: {
-//       type: Number
-//     },
-//     name: {
-//       type: String,
-//       required: true,
-//     },
-//     email: {
-//       type: String,
-//       required: true,
-//       unique: true,
-//     },
-//     vat_number: {
-//       type: String,
-//       required: true,
-//       unique: true,
-//     },
-//   },
-//   { timestamps: true }
-// );
-
-// export default mongoose.model("Customer", schema, "customer");
-
-
 import { Sequelize, DataTypes } from "sequelize";
 const sequelize = new Sequelize('entities_manager', 'root', '1234', {
   host: 'localhost',
@@ -51,10 +23,12 @@ const Customer = sequelize.define("customer", {
     unique: true,
   },
 },
-{freezeTableName: true}
+  { freezeTableName: true }
 );
 
-// await Customer.sync({ alter: true })
+Customer.sync({ force: false });
+
 export default Customer;
+
 
 

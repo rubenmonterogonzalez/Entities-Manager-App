@@ -13,7 +13,6 @@ const vat_number = ref("");
 
 
 const customer = ref({
-  customerId: customerStore.getCustomer.length + 1,
   name,
   email,
   vat_number,
