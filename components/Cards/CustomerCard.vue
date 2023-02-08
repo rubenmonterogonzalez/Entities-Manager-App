@@ -3,13 +3,14 @@ import Input from "~~/components/Forms/Input/Input.vue";
 import { useCustomerStore } from "../../store/customerStore";
 import { useForm } from "vee-validate";
 import { ICustomer } from "../../types/index";
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  TransitionRoot,
-  TransitionChild,
-} from "@headlessui/vue";
+import EditCustomer from '~~/components/Modals/EditCustomer.vue'
+// import {
+//   Dialog,
+//   DialogPanel,
+//   DialogTitle,
+//   TransitionRoot,
+//   TransitionChild,
+// } from "@headlessui/vue";
 
 /* CARD */
 const customerStore = useCustomerStore();
@@ -45,6 +46,11 @@ const closeModal = () => {
   customer.value = {};
   open.value = false;
 };
+
+const props = defineProps(['submitCustomer', 'closeModal'])
+console.log(props)
+
+const editCustomer = ref();
 </script>
 
 <template>
@@ -79,7 +85,9 @@ const closeModal = () => {
     </div>
   </section>
 
-  <TransitionRoot :show="open" as="template">
+  <EditCustomer ref="editCustomer" submitCustomer="submitCustomer" closeModal="closeModal"/>
+
+  <!-- <TransitionRoot :show="open" as="template">
     <Dialog as="div" @close="closeModal" class="relative z-10">
       <TransitionChild
         as="template"
@@ -171,5 +179,6 @@ const closeModal = () => {
         </div>
       </div>
     </Dialog>
-  </TransitionRoot>
+  </TransitionRoot> -->
+
 </template>

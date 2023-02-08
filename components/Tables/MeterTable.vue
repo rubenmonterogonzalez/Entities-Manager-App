@@ -3,6 +3,7 @@ import { useMeterStore } from "../../store/meterStore";
 import type { Header } from "vue3-easy-data-table";
 import Input from "~~/components/Forms/Input/Input.vue";
 import { useForm } from "vee-validate";
+import dayjs from "dayjs";
 import {
   Dialog,
   DialogPanel,
@@ -22,6 +23,8 @@ const headers: Header[] = [
 
 const meterStore = useMeterStore();
 
+const meters = await useAsyncData(() => meterStore.getMeters()); 
+
 const search = ref("");
 
 /* FORM */
@@ -29,7 +32,7 @@ const router = useRouter();
 
 const name = ref("");
 const serial_number = ref("")
-const installation_date = ref(new Date())
+const installation_date = ref("")
 
 const meter = ref({
   name,
@@ -41,7 +44,7 @@ const handleSubmit = async () => {
   try {
     await meterStore.addMeter(meter.value);
     closeModal();
-    router.push({ path: "/meter" });
+    router.push({ path: "/circuit" });
   } catch (error) {
     console.log(error);
   }
@@ -56,7 +59,6 @@ const closeModal = () => {
   // meter.value = {};
   open.value = false;
 };
-
 
 </script>
 
@@ -89,11 +91,11 @@ const closeModal = () => {
           <template #item-name="{ name }">
             <span>{{ name }}</span>
           </template>
-          <template #item-address="{ serial_number }">
+          <template #item-serial_number="{ serial_number }">
             <span>{{ serial_number }}</span>
           </template>
-          <template #item-post_code="{ installation_date }">
-            <span>{{ installation_date }}</span>
+          <template #item-installation_date="{ installation_date }">
+            <span>{{ dayjs(installation_date).format("DD-MM-YYYY") }}</span>
           </template>
         </EasyDataTable>
       </ClientOnly>

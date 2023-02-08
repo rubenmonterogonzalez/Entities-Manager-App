@@ -2,7 +2,9 @@
 import { useCircuitStore } from "../../store/circuitStore";
 import type { Header } from "vue3-easy-data-table";
 import Input from "~~/components/Forms/Input/Input.vue";
+import { onMounted } from 'vue';
 import { useForm } from "vee-validate";
+import dayjs from "dayjs";
 import {
   Dialog,
   DialogPanel,
@@ -19,8 +21,9 @@ const headers: Header[] = [
   { text: "MAIN", value: "is_main", width: 150 },
 ];
 
-
 const circuitStore = useCircuitStore();
+
+const circuits = await useAsyncData(() => circuitStore.getCircuits());
 
 const search = ref("");
 
@@ -28,13 +31,17 @@ const search = ref("");
 const router = useRouter();
 
 const name = ref("");
-const installation_date = ref(new Date())
-const is_main = ref(false)
+const installation_date = ref("")
+const is_main = ref()
 const circuit = ref({
   name,
   installation_date,
   is_main
 });
+
+// onMounted(() => {
+//   is_main.value = is_main.value === 'Yes' ? 1 : 0;
+// });
 
 const handleSubmit = async () => {
   try {
@@ -87,11 +94,11 @@ const closeModal = () => {
           <template #item-name="{ name }">
             <span>{{ name }}</span>
           </template>
-          <template #item-post_code="{ installation_date }">
-            <span>{{ installation_date }}</span>
+          <template #item-installation_date="{ installation_date }">
+            <span>{{ dayjs(installation_date).format("DD-MM-YYYY") }}</span>
           </template>
-          <template #item-address="{ is_main }">
-            <span>{{ is_main }}</span>
+          <template #item-is_main="{ is_main }">
+            <span>{{ is_main? "Yes": "No" }}</span>
           </template>
         </EasyDataTable>
       </ClientOnly>
@@ -130,10 +137,10 @@ const closeModal = () => {
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Installation Date" autocomplete="Off" required />
                 </div>
-                <div class="mb-6">
-                  <input v-model="is_main" type="text"
-                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
-                    placeholder="Main" autocomplete="Off" required />
+                <label class="text-lg">Main</label>
+                <div>
+                  <input type="checkbox" name="is_main" v-model="is_main" />
+                  <label for="is_main" class="ml-1">{{ is_main ? "Yes" : "No"}}</label>
                 </div>
                 <button type="submit"
                   class="w-full px-6 py-2 mt-6 bg-black border-2 border-black font-semibold text-white leading-tight rounded-sm shadow-md hover:border-2 hover:border-black hover:bg-white hover:shadow-lg hover:text-black transition duration-150 ease-in-out">

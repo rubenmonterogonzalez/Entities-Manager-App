@@ -1,8 +1,4 @@
-<script lang="ts" setup>
-import Input from "~~/components/Forms/Input/Input.vue";
-import { useCustomerStore } from "../../store/customerStore"
-import { useForm } from "vee-validate";
-import { ICustomer } from '../../types/index';
+<script setup lang="ts">
 import {
   Dialog,
   DialogPanel,
@@ -10,41 +6,6 @@ import {
   TransitionRoot,
   TransitionChild,
 } from "@headlessui/vue";
-
-const customerStore = useCustomerStore();
-
-await useAsyncData(() => customerStore.getCustomers());
-
-const customer = ref({});
-
-const { handleSubmit } = useForm({
-  initialValues: customer,
-});
-
-const submitCustomer = handleSubmit(async (values) => {
-  customerStore.updateCustomer(customer.value._id, { ...values });
-  closeModal();
-});
-
-
-const open = ref(false);
-
-const openModal = (customer: ICustomer) => {
-  if (customer) {
-    JSON.parse(JSON.stringify({ ...customer }));
-  }
-  open.value = true;
-};
-const closeModal = () => {
-  customer.value = {};
-  open.value = false;
-};
-
-defineExpose({
-  openModal,
-  closeModal,
-});
-
 </script>
 
 <template>
@@ -69,18 +30,15 @@ defineExpose({
               <form @submit.prevent="submitCustomer" class="mt-5">
                 <div class="">
                   <div class="col-span-1">
-                    <Input placeholder="Name" rules="required" label="Name" type="text" name="name" id="name"
-                      autocomplete="off"
+                    <Input label="Name" type="text" name="name" id="name" autocomplete="off"
                       class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none" />
                   </div>
                   <div class="col-span-1">
-                    <Input placeholder="Email" rules="required" label="Email" type="text" name="email" id="email"
-                      autocomplete="off"
+                    <Input label="Email" type="text" name="email" id="email" autocomplete="off"
                       class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none" />
                   </div>
                   <div class="col-span-1">
-                    <Input placeholder="Vat Number" rules="required" label="Vat Number" type="text" name="vat_number"
-                      id="vat_number" autocomplete="off"
+                    <Input label="Vat Number" type="text" name="vat_number" id="vat_number" autocomplete="off"
                       class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none" />
                   </div>
                 </div>
@@ -96,7 +54,6 @@ defineExpose({
                   </button>
                 </div>
               </form>
-
             </DialogPanel>
           </TransitionChild>
         </div>
@@ -104,7 +61,4 @@ defineExpose({
     </Dialog>
   </TransitionRoot>
 </template>
-  
-
-  
 

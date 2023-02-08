@@ -2,7 +2,6 @@
 import { useSiteStore } from "../../store/siteStore";
 import type { Header } from "vue3-easy-data-table";
 import Input from "~~/components/Forms/Input/Input.vue";
-import { useForm } from "vee-validate";
 import {
   Dialog,
   DialogPanel,
@@ -19,10 +18,13 @@ const headers: Header[] = [
   { text: "POST CODE", value: "post_code", width: 100 },
   { text: "LATITUDE", value: "coordinates.latitude", width: 25 },
   { text: "LONGITUDE", value: "coordinates.longitude", width: 25 },
+  { text: "ACTIONS", value: "actions", width: 25 },
 ];
 
 
 const siteStore = useSiteStore();
+
+const sites = await useAsyncData(() => siteStore.getSites());
 
 const search = ref("");
 
@@ -66,7 +68,9 @@ const closeModal = () => {
   open.value = false;
 };
 
-
+const deleteSite = async (site: any) => {
+  await siteStore.deleteSite(site.id);
+};
 </script>
 
 <template>
@@ -91,10 +95,7 @@ const closeModal = () => {
     <div class="relative">
       <ClientOnly>
         <EasyDataTable :search-value="search" empty-message="No Site Found. Create new Site" theme-color="#f97316"
-          table-class-name="eztble" :headers="headers" :items="siteStore.site" :data="siteStore.site.map(site => {
-          site.coordinates = JSON.parse(site.coordinates);
-          return site;
-        })" alternating>
+          table-class-name="eztble" :headers="headers" :items="siteStore.site" alternating>
           <template #item-id="{ id }">
             <span>{{ id }}</span>
           </template>
@@ -113,11 +114,23 @@ const closeModal = () => {
           <template #item-longitude="{ coordinates }">
             <span>{{ coordinates }}</span>
           </template>
+
+          <template #item-actions="site">
+            <div class="flex space-x-4 text-gray-500">
+              <button @click="openModal()">
+                <Icon size="18" name="simple-line-icons:pencil" />
+              </button>
+              <button @click="deleteSite(site)">
+                <Icon size="18" name="simple-line-icons:trash" />
+              </button>
+            </div>
+          </template>
         </EasyDataTable>
       </ClientOnly>
     </div>
   </section>
 
+  <!-- MODAL -->
   <TransitionRoot :show="open" as="template">
     <Dialog as="div" @close="closeModal" class="relative z-10">
       <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
