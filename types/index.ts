@@ -20,15 +20,15 @@ export interface ISite {
 export interface IMeter {
   id?: string;
   name: string;
-  installation_date: string;
-  serial_number: number;
+  installation_date: Date;
+  serial_number: string;
   siteId?: number;
 }
 
 export interface ICircuit {
   id?: string;
   name: string;
-  installation_date: string;
+  installation_date: Date;
   is_main: boolean;
   meterId?: number;
 }

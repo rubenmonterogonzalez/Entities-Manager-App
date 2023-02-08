@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useSiteStore } from "../../store/siteStore";
+import { useCircuitStore } from "../../store/circuitStore";
 import type { Header } from "vue3-easy-data-table";
 import Input from "~~/components/Forms/Input/Input.vue";
 import { useForm } from "vee-validate";
@@ -15,14 +15,12 @@ import {
 const headers: Header[] = [
   { text: "ID", value: "id", width: 25 },
   { text: "NAME", value: "name", width: 100 },
-  { text: "ADDRESS", value: "address", width: 150 },
-  { text: "POST CODE", value: "post_code", width: 100 },
-  { text: "LATITUDE", value: "coordinates.latitude", width: 25 },
-  { text: "LONGITUDE", value: "coordinates.longitude", width: 25 },
+  { text: "INSTALLATION DATE", value: "installation_date", width: 100 },
+  { text: "MAIN", value: "is_main", width: 150 },
 ];
 
 
-const siteStore = useSiteStore();
+const circuitStore = useCircuitStore();
 
 const search = ref("");
 
@@ -30,27 +28,19 @@ const search = ref("");
 const router = useRouter();
 
 const name = ref("");
-const latitude = ref(0)
-const longitude = ref(0)
-const coordinates = ref({
-  latitude,
-  longitude,
-});
-const address = ref("");
-const post_code = ref("");
-
-const site = ref({
+const installation_date = ref(new Date())
+const is_main = ref(false)
+const circuit = ref({
   name,
-  coordinates,
-  address,
-  post_code,
+  installation_date,
+  is_main
 });
 
 const handleSubmit = async () => {
   try {
-    await siteStore.addSite(site.value);
+    await circuitStore.addCircuit(circuit.value);
     closeModal();
-    router.push({ path: "/meter" });
+    router.push({ path: "/" });
   } catch (error) {
     console.log(error);
   }
@@ -62,10 +52,9 @@ const openModal = () => {
   open.value = true;
 };
 const closeModal = () => {
-  // site.value = {};
+  // circuit.value = {};
   open.value = false;
 };
-
 
 </script>
 
@@ -83,35 +72,26 @@ const closeModal = () => {
       <div>
         <button @click="openModal"
           class="bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white text-sm whitespace-nowrap hover:border-2 hover:border-black hover:bg-white hover:text-black">
-          New SITE Entity
+          New CIRCUIT Entity
         </button>
       </div>
     </div>
 
     <div class="relative">
       <ClientOnly>
-        <EasyDataTable :search-value="search" empty-message="No Site Found. Create new Site" theme-color="#f97316"
-          table-class-name="eztble" :headers="headers" :items="siteStore.site" :data="siteStore.site.map(site => {
-          site.coordinates = JSON.parse(site.coordinates);
-          return site;
-        })" alternating>
+        <EasyDataTable :search-value="search" empty-message="No Circuit Found. Create new Circuit" theme-color="#f97316"
+          table-class-name="eztble" :headers="headers" :items="circuitStore.circuit" alternating>
           <template #item-id="{ id }">
             <span>{{ id }}</span>
           </template>
           <template #item-name="{ name }">
             <span>{{ name }}</span>
           </template>
-          <template #item-address="{ address }">
-            <span>{{ address }}</span>
+          <template #item-post_code="{ installation_date }">
+            <span>{{ installation_date }}</span>
           </template>
-          <template #item-post_code="{ post_code }">
-            <span>{{ post_code }}</span>
-          </template>
-          <template #item-latitude="{ coordinates }">
-            <span>{{ coordinates }}</span>
-          </template>
-          <template #item-longitude="{ coordinates }">
-            <span>{{ coordinates }}</span>
+          <template #item-address="{ is_main }">
+            <span>{{ is_main }}</span>
           </template>
         </EasyDataTable>
       </ClientOnly>
@@ -133,7 +113,7 @@ const closeModal = () => {
             <DialogPanel
               class="w-full max-w-sm transform overflow-hidden rounded-sm bg-white p-6 text-left align-middle shadow-xl transition-all">
               <DialogTitle as="h3" class="mb-6 text-lg font-medium leading-6 text-gray-900">
-                Create a new SITE Entity
+                Create a new CIRCUIT Entity
               </DialogTitle>
 
               <form @submit.prevent="handleSubmit" class="min-w-[300px]">
@@ -146,26 +126,14 @@ const closeModal = () => {
                     placeholder="Name" autocomplete="Off" required />
                 </div>
                 <div class="mb-6">
-                  <input v-model="address" type="text"
+                  <input v-model="installation_date" type="date"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
-                    placeholder="Address" autocomplete="Off" required />
+                    placeholder="Installation Date" autocomplete="Off" required />
                 </div>
                 <div class="mb-6">
-                  <input v-model="post_code" type="text"
+                  <input v-model="is_main" type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
-                    placeholder="Post Code" autocomplete="Off" required />
-                </div>
-                <div class="mb-6">
-                  <label>Latitude</label>
-                  <input v-model="coordinates.latitude" type="number"
-                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
-                    placeholder="Latitude" autocomplete="Off" required />
-                </div>
-                <div class="mb-6">
-                  <label>Longitude</label>
-                  <input v-model="coordinates.longitude" type="number"
-                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
-                    placeholder="Longitude" autocomplete="Off" required />
+                    placeholder="Main" autocomplete="Off" required />
                 </div>
                 <button type="submit"
                   class="w-full px-6 py-2 mt-6 bg-black border-2 border-black font-semibold text-white leading-tight rounded-sm shadow-md hover:border-2 hover:border-black hover:bg-white hover:shadow-lg hover:text-black transition duration-150 ease-in-out">

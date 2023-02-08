@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import MeterForm from '~~/components/Forms/MeterForm.vue';
+import CustomerCard from '~~/components/Cards/CustomerCard.vue';
+import MeterTable from '~~/components/Tables/MeterTable.vue'
+import SiteSelect from '~~/components/Select/SiteSelect.vue'
 </script>
 
 <template>
-    <MeterForm />
+    <CustomerCard />
+    <SiteSelect />
+    <MeterTable />
 </template>
 

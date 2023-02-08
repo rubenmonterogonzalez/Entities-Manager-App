@@ -10,7 +10,9 @@ const Meter = sequelize.define("meter", {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    // defaultValue: sequelize.fn("cuid"),
+  },
+  name: {
+    type: DataTypes.STRING,
   },
   installation_date: {
     type: DataTypes.DATE,
@@ -18,9 +20,6 @@ const Meter = sequelize.define("meter", {
   serial_number: {
     type: DataTypes.STRING,
     unique: true,
-  },
-  name: {
-    type: DataTypes.STRING,
   },
   siteId: {
     type: DataTypes.INTEGER,

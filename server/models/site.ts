@@ -10,7 +10,6 @@ const Site = sequelize.define("site", {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    // defaultValue: sequelize.fn("cuid"),
   },
   name: {
     type: DataTypes.STRING,

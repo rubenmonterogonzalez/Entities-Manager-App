@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import CircuitForm from '~~/components/Forms/CircuitForm.vue';
+import CustomerCard from '~~/components/Cards/CustomerCard.vue';
+import SiteSelect from '~~/components/Select/SiteSelect.vue';
+import MeterSelect from '~~/components/Select/MeterSelect.vue';
+import CircuitTable from '~~/components/Tables/CircuitTable.vue'
 </script>
 
 <template>
-    <CircuitForm />
+    <CustomerCard />
+    <SiteSelect />
+    <MeterSelect />
+    <CircuitTable />
 </template>

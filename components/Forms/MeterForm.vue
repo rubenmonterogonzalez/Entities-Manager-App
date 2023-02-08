@@ -12,7 +12,7 @@ const meter = ref({
 const handleSubmit = async () => {
   try {
     window.localStorage.setItem("meter", JSON.stringify(meter.value));
-    router.push({ path: "/customer/site/meter/circuit" });
+    router.push({ path: "/circuit" });
   } catch (error) {
     console.log(error)
   }
@@ -35,6 +35,14 @@ const handleSubmit = async () => {
           </p>
         </div>
         <div class="grid grid-cols-2 mb-6">
+          <input
+            v-model="name"
+            type="text"
+            class="block col-span-2 w-full mb-1 px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+            placeholder="Name"
+            autocomplete="Off"
+            required
+          />
           <input
             v-model="serial_number"
             type="number"
