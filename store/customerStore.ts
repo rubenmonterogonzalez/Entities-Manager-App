@@ -5,6 +5,7 @@ import { useToast } from "vue-toastification";
 export const useCustomerStore = defineStore("customer-store", {
   state: () => ({
     customer: [] as ICustomer[],
+    selectedCustomer: null as null | ICustomer,
   }),
   actions: {
     async getCustomers() {
@@ -16,14 +17,25 @@ export const useCustomerStore = defineStore("customer-store", {
         useToast().error(error.message);
       }
     },
+    async getCustomer(id: string) {
+      try {
+        let data = await $fetch<ICustomer>(`/api/customer/${id}`);
+        this.selectedCustomer = data;
+        return data as ICustomer;
+      } catch (error: any) {
+        useToast().error(error.message);
+      }
+    },
     async addCustomer(customer: ICustomer) {
       try {
-        await $fetch("/api/customer/add", {
+        const data = await $fetch("/api/customer/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: customer,
         })
         useToast().success("Customer has been created and added to Db.");
+        return data
+      
       } catch (error: any) {
         useToast().error(error.data.message);
         console.log(error)
@@ -59,11 +71,11 @@ export const useCustomerStore = defineStore("customer-store", {
         });
     },
   },
-  getters: {
-    getCustomer: (state) => {
-      return state.customer
-    },
-  }
+  // getters: {
+  //   getCustomer: (state) => {
+  //     return state.customer
+  //   },
+  // }
 });
 
 

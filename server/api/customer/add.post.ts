@@ -14,8 +14,8 @@ export default defineEventHandler(async (event) => {
   // }
 
   try {
-    await Customer.create(body);
-    return { message: "Customer has been created" };
+    const customer = await Customer.create(body);
+    return { message: "Customer has been created", data: customer };
   } catch (err: any) {
     throw createError({
       message: err.message,

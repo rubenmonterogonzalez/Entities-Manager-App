@@ -1,8 +1,6 @@
 <script setup>
 import { useCustomerStore } from "~~/store/customerStore";
 
-const nuxtApp = useNuxtApp();
-
 const customerStore = useCustomerStore();
 
 const router = useRouter();
@@ -10,7 +8,6 @@ const router = useRouter();
 const name = ref("");
 const email = ref("");
 const vat_number = ref("");
-
 
 const customer = ref({
   name,
@@ -20,11 +17,8 @@ const customer = ref({
 
 const handleSubmit = async () => {
   try {
-    if (process.client && !nuxtApp.isHydrating) {
-      // window.localStorage.setItem("customer", JSON.stringify(customer.value));
-      router.push({ path: "/site" });
-      customerStore.addCustomer(customer.value);
-    }
+    const data = await customerStore.addCustomer(customer.value);
+    router.push({ path: `/customer/${data?.data?.id}` });
   } catch (error) {
     console.log(error);
   }

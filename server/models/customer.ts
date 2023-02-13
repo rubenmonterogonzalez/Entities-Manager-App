@@ -9,7 +9,6 @@ const Customer = sequelize.define("customer", {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    // defaultValue: sequelize.fn("cuid"),
   },
   name: {
     type: DataTypes.STRING,

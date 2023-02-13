@@ -2,6 +2,7 @@
 import { useSiteStore } from "../../store/siteStore";
 import type { Header } from "vue3-easy-data-table";
 import Input from "~~/components/Forms/Input/Input.vue";
+import { useCustomerStore } from '../../store/customerStore';
 import {
   Dialog,
   DialogPanel,
@@ -23,14 +24,19 @@ const headers: Header[] = [
 
 
 const siteStore = useSiteStore();
+const customerStore = useCustomerStore();
 
 const sites = await useAsyncData(() => siteStore.getSites());
+const customers = await useAsyncData(() => customerStore.getCustomers());
+
+console.log(customers.data.value?.map(customer => {return customer.id} ))
 
 const search = ref("");
 
 /* FORM */
 const router = useRouter();
 
+const id = ref();
 const name = ref("");
 const latitude = ref(0)
 const longitude = ref(0)
@@ -42,10 +48,12 @@ const address = ref("");
 const post_code = ref("");
 
 const site = ref({
+  id,
   name,
   coordinates,
   address,
   post_code,
+  // customerId = id + "." + customers.data.value?.map(customer => {return customer.id},
 });
 
 const handleSubmit = async () => {

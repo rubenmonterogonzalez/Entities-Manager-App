@@ -14,7 +14,7 @@ export interface ISite {
     latitude: number,
     longitude: number
   };
-  customerId?: number;
+  customerId?: string;
 }
 
 export interface IMeter {
@@ -22,7 +22,7 @@ export interface IMeter {
   name: string;
   installation_date: string;
   serial_number: string;
-  siteId?: number;
+  siteId?: string;
 }
 
 export interface ICircuit {
@@ -30,5 +30,5 @@ export interface ICircuit {
   name: string;
   installation_date: string;
   is_main: boolean;
-  meterId?: number;
+  meterId?: string;
 }

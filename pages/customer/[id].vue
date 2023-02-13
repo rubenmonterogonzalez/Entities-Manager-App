@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import Input from "~~/components/Forms/Input/Input.vue";
+import { ICustomer } from "../../types/index";
 import { useCustomerStore } from "../../store/customerStore";
 import { useForm } from "vee-validate";
-import { ICustomer } from "../../types/index";
+import Input from "~~/components/Forms/Input/Input.vue";
 import {
   Dialog,
   DialogPanel,
@@ -11,13 +11,16 @@ import {
   TransitionChild,
 } from "@headlessui/vue";
 
+// get route param id
+const route = useRoute()
+
 /* CARD */
 const customerStore = useCustomerStore();
 const customers = await useAsyncData(() => customerStore.getCustomers());
+const customerById = await useAsyncData(() => customerStore.getCustomer(JSON.parse(JSON.stringify(route.params.id)))) 
 let lastCustomer = JSON.parse(
-  JSON.stringify({ ...customers.data.value?.slice(-1).pop() })
+  JSON.stringify(customerById.data.value?.body)
 );
-
 
 /* MODAL */
 const customer = ref({});
@@ -29,7 +32,7 @@ const { handleSubmit } = useForm({
 const submitCustomer = handleSubmit(async (values) => {
   await customerStore.updateCustomer(lastCustomer.id, { ...values });
   /* Updates Card with New State */
-  lastCustomer = customerStore.customer[customerStore.customer.length -1];
+  lastCustomer = customerStore.customer[parseInt(route.params.id, 10) - 1]
   closeModal();
 });
 
@@ -46,14 +49,11 @@ const closeModal = () => {
   customer.value = {};
   open.value = false;
 };
-
 </script>
 
 <template>
   <section class="bg-black flex justify-center py-6">
-    <div
-      class="block m-auto px-6 py-3 rounded-sm shadow-lg bg-white max-w-md min-w-[350px]"
-    >
+    <div class="block m-auto px-6 py-3 rounded-sm shadow-lg bg-white max-w-md min-w-[350px]">
       <div class="my-4 text-center">
         <h2 class="font-bold text-xl max-w-[240px] m-auto leading-6 mb-2">
           CUSTOMER Entity
@@ -69,18 +69,14 @@ const closeModal = () => {
         <span><strong>VAT-Number: </strong>{{ lastCustomer.vat_number }}</span>
       </div>
       <div class="flex ml-auto">
-        <button
-          type="button"
-          @click="openModal(lastCustomer)"
-          class="ml-auto bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white hover:border-2 hover:border-black hover:bg-white hover:text-black"
-        >
+        <button type="button" @click="openModal(lastCustomer)"
+          class="ml-auto bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white hover:border-2 hover:border-black hover:bg-white hover:text-black">
           Edit
           <Icon size="18" name="simple-line-icons:pencil" class="ml-2" />
         </button>
       </div>
     </div>
   </section>
-
 
   <TransitionRoot :show="open" as="template">
     <Dialog as="div" @close="closeModal" class="relative z-10">
@@ -176,4 +172,7 @@ const closeModal = () => {
     </Dialog>
   </TransitionRoot>
 
+
 </template>
+
+
