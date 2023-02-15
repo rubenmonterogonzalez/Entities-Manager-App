@@ -5,6 +5,7 @@ const props = defineProps({
   label: String,
   name: String,
   rules: String,
+  value: String,
   modelValue: [String, Number],
 });
 

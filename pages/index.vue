@@ -16,7 +16,7 @@
       </p>
       <div class="w-full flex items-center justify-center">
         <NuxtLink
-          href="/customer"
+          to="/customer"
           class="bg-black border-2 border-white font-bold px-4 py-2 rounded-sm text-white hover:border-2 hover:border-white hover:bg-white hover:text-black">Get Started</NuxtLink
         >
       </div>

@@ -29,14 +29,11 @@ const customerStore = useCustomerStore();
 const sites = await useAsyncData(() => siteStore.getSites());
 const customers = await useAsyncData(() => customerStore.getCustomers());
 
-console.log(customers.data.value?.map(customer => {return customer.id} ))
-
 const search = ref("");
 
 /* FORM */
 const router = useRouter();
 
-const id = ref();
 const name = ref("");
 const latitude = ref(0)
 const longitude = ref(0)
@@ -48,7 +45,6 @@ const address = ref("");
 const post_code = ref("");
 
 const site = ref({
-  id,
   name,
   coordinates,
   address,
@@ -60,7 +56,7 @@ const handleSubmit = async () => {
   try {
     await siteStore.addSite(site.value);
     closeModal();
-    router.push({ path: "/meter" });
+    // router.push({ path: "/meter" });
   } catch (error) {
     console.log(error);
   }

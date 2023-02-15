@@ -3,6 +3,7 @@ export interface ICustomer {
   name: string;
   email: string;
   vat_number: string;
+  data: ICustomer;
 }
 
 export interface ISite {

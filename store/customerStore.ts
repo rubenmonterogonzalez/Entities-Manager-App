@@ -17,7 +17,7 @@ export const useCustomerStore = defineStore("customer-store", {
         useToast().error(error.message);
       }
     },
-    async getCustomer(id: string) {
+    async getCustomer(id: string | number | string[] | number[]) {
       try {
         let data = await $fetch<ICustomer>(`/api/customer/${id}`);
         this.selectedCustomer = data;
@@ -45,7 +45,7 @@ export const useCustomerStore = defineStore("customer-store", {
         }
       }
     },
-    async updateCustomer(id: string, customer: ICustomer) {
+    async updateCustomer(id: string | string[], customer: ICustomer) {
       await $fetch(`/api/customer/${id}`, {
         method: "PUT",
         body: customer,
@@ -71,11 +71,11 @@ export const useCustomerStore = defineStore("customer-store", {
         });
     },
   },
-  // getters: {
-  //   getCustomer: (state) => {
-  //     return state.customer
-  //   },
-  // }
+  getters: {
+    getCustomerState: (state) => {
+      return state.selectedCustomer;
+    },
+  }
 });
 
 

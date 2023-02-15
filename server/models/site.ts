@@ -24,8 +24,7 @@ const Site = sequelize.define("site", {
     type: DataTypes.JSON,
   },
   customerId: {
-    type: DataTypes.STRING,
-    unique: true,
+    type: DataTypes.INTEGER,
   },
 },
   { freezeTableName: true }

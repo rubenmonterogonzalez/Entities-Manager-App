@@ -8,19 +8,19 @@ export default defineEventHandler(async (event) => {
     if (customer) {
       return {
         status: 200,
-        body: customer,
+        data: customer,
       }
     } else {
       return {
         status: 404,
-        body: { message: 'Customer not found' },
+        data: { message: 'Customer not found' },
       }
     }
   } catch (error) {
     console.error('Error fetching customer by ID:', error)
     return {
       status: 500,
-      body: { message: 'Internal server error' },
+      data: { message: 'Internal server error' },
     }
   }
 })
