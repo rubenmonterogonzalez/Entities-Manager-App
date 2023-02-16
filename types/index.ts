@@ -15,7 +15,7 @@ export interface ISite {
     latitude: number,
     longitude: number
   };
-  customerId?: string;
+  customerId?: string | string[];
 }
 
 export interface IMeter {

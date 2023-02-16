@@ -38,7 +38,6 @@ const { handleSubmit } = useForm({
 const submitCustomer = handleSubmit(async (values) => {
   await customerStore.updateCustomer(customerId, { ...values });
   await refetchCustomer();
-  console.log(customer.value)
   closeModal();
 });
 

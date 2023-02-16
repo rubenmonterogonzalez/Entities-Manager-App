@@ -4,9 +4,17 @@ import { useToast } from "vue-toastification";
 
 export const useSiteStore = defineStore("site-store", {
   state: () => ({
+    customerId: null,
     site: [] as ISite[],
+    selectedSite: null as null | ISite,
   }),
   actions: {
+    async init() {
+      // fetch sites
+      await this.getSites()
+      // fetch customer or whatever else you need
+      
+    },
     async getSites() {
       try {
         let data = await $fetch<ISite[]>("/api/site");
@@ -16,13 +24,35 @@ export const useSiteStore = defineStore("site-store", {
         useToast().error(error.message);
       }
     },
+    async getSite(id: string | number | string[] | number[]) {
+      try {
+        let data = await $fetch<ISite>(`/api/site/${id}`);
+        this.selectedSite = data;
+        return data as ISite;
+      } catch (error: any) {
+        useToast().error(error.message);
+      }
+    },
+    async getSitesByCustomerId(customerId: string | number | string[] | number[]) {
+      try {
+        let data = await $fetch<ISite>(`/api/site/customerId/${customerId}`);
+        this.selectedSite = data;
+        return data as ISite;
+      } catch (error: any) {
+        useToast().error(error.message);
+      }
+    },
     async addSite(site: ISite) {
       try {
-        await $fetch("/api/site/add", {
+        const res = await $fetch("/api/site/add", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+          },
           body: site,
         })
+        console.log({ res })
+        this.site.push(res?.data)
         useToast().success("Site has been created.");
       } catch (error: any) {
         useToast().error(error.data.message);
@@ -60,8 +90,12 @@ export const useSiteStore = defineStore("site-store", {
     },
   },
   getters: {
-    getSite: (state) => {
-      return state.site
+    getSiteState: (state) => {
+      return state.selectedSite
+    },
+
+    customerSites: (state) => {
+      return state.site.filter(s => s.customerId === state.customerId)
     },
   }
 });

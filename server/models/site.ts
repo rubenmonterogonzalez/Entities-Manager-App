@@ -5,7 +5,7 @@ const sequelize = new Sequelize('entities_manager', 'root', '1234', {
   dialect: 'mysql',
 });
 
-const Site = sequelize.define("site", {
+const Site = sequelize.define("sites", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -25,9 +25,10 @@ const Site = sequelize.define("site", {
   },
   customerId: {
     type: DataTypes.INTEGER,
+    allowNull: false,
   },
 },
-  { freezeTableName: true }
+  // { freezeTableName: true }
 );
 
 Customer.hasMany(Site, { 
@@ -36,6 +37,13 @@ Customer.hasMany(Site, {
 
 Site.belongsTo(Customer, { 
   as: 'customer', foreignKey: 'customerId' 
+});
+
+Site.beforeCreate(async (site) => {
+  const customer = await Customer.findByPk(site.customerId);
+  if (!customer) {
+    throw new Error('Customer not found');
+  }
 });
 
 Site.sync({ force: false })
