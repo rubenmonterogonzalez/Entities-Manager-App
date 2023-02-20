@@ -9,12 +9,6 @@ export const useSiteStore = defineStore("site-store", {
     selectedSite: null as null | ISite,
   }),
   actions: {
-    async init() {
-      // fetch sites
-      await this.getSites()
-      // fetch customer or whatever else you need
-      
-    },
     async getSites() {
       try {
         let data = await $fetch<ISite[]>("/api/site");
@@ -44,16 +38,13 @@ export const useSiteStore = defineStore("site-store", {
     },
     async addSite(site: ISite) {
       try {
-        const res = await $fetch("/api/site/add", {
+        const data = await $fetch("/api/site/add", {
           method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: site,
         })
-        console.log({ res })
-        this.site.push(res?.data)
         useToast().success("Site has been created.");
+        return data
       } catch (error: any) {
         useToast().error(error.data.message);
         console.log(error)

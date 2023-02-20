@@ -3,7 +3,7 @@ import { useSiteStore } from "../../store/siteStore";
 import type { Header } from "vue3-easy-data-table";
 import Input from "~~/components/Forms/Input/Input.vue";
 import { useCustomerStore } from "../../store/customerStore";
-import { useToggle } from '../../composables/useToggle';
+import { ISite } from "../../types/index";
 import {
   Dialog,
   DialogPanel,
@@ -26,16 +26,9 @@ const headers: Header[] = [
 const siteStore = useSiteStore();
 const customerStore = useCustomerStore();
 
-
-onMounted(() => {
-  // fetch data
-  siteStore.init()
-})
-
-// siteStore.getSites()
-// const sites = await useAsyncData(() => siteStore.getSites());
-// const customers = await useAsyncData(() => customerStore.getCustomers());
-
+siteStore.getSites();
+const sites = await useAsyncData(() => siteStore.getSites());
+const customers = await useAsyncData(() => customerStore.getCustomers());
 const search = ref("");
 
 /* FORM */
@@ -46,10 +39,7 @@ const siteByCustomerId = await useAsyncData(() =>
   siteStore.getSitesByCustomerId(customerId)
 );
 
-// const sitesArray = ref([siteByCustomerId.data.value.data][0])
-// await siteStore.setSites([siteByCustomerId.data.value.data][0]);
-// sitesArray.value
-// sites.all reactive({ all: [siteByCustomerId.data.value.data][0] })
+const sitesArray = ref([siteByCustomerId.data.value.data][0]);
 
 const name = ref("");
 const latitude = ref(0);
@@ -69,22 +59,39 @@ const site = ref({
   customerId,
 });
 
-
 const handleSubmit = async () => {
   try {
     await siteStore.addSite(site.value);
-    // router.go({ path: route.path });
-    toggleModal();
+    closeModal();
   } catch (error) {
     console.log(error);
   }
 };
 
-const { open, toggle: toggleModal } = useToggle()
+/* MODAL NEW SITE */
+const open = ref(false);
+const openModal = () => {
+  open.value = true;
+};
+const closeModal = async () => {
+  open.value = false;
+};
+
+/* MODAL UPDATE SITE */
+
+const update = ref(false);
+
+const openUpdateModal = (site: ISite) => {
+  update.value = true;
+};
+
+const closeUpdateModal = async () => {
+  update.value = false;
+};
 </script>
 
 <template>
-  <section class="bg-black min-h-[50vh] px-5 mx-auto pt-2">
+  <section class="bg-black px-5 mx-auto pt-2">
     <div
       v-if="siteStore.site.length > 0"
       class="bg-white border-[1px] border-gray-300 flex flex-col items-center justify-between mt-5 px-4 py-2 space-y-2 xs:space-y-0 xs:flex-row"
@@ -110,7 +117,7 @@ const { open, toggle: toggleModal } = useToggle()
       </div>
       <div>
         <button
-          @click="toggleModal"
+          @click="openModal"
           class="bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white text-sm whitespace-nowrap hover:border-2 hover:border-black hover:bg-white hover:text-black"
         >
           New SITE Entity
@@ -126,7 +133,7 @@ const { open, toggle: toggleModal } = useToggle()
           theme-color="#f97316"
           table-class-name="eztble"
           :headers="headers"
-          :items="siteStore.site"
+          :items="sitesArray"
           alternating
         >
           <template #item-id="{ id }">
@@ -150,7 +157,7 @@ const { open, toggle: toggleModal } = useToggle()
 
           <template #item-actions="site">
             <div class="flex space-x-4 text-gray-500">
-              <button @click="toggleModal">
+              <button @click="openUpdateModal(site.id)">
                 <Icon size="18" name="simple-line-icons:pencil" />
               </button>
               <button @click="siteStore.deleteSite(site.id)">
@@ -163,9 +170,9 @@ const { open, toggle: toggleModal } = useToggle()
     </div>
   </section>
 
-  <!-- MODAL -->
+  <!-- MODAL NEW SITE -->
   <TransitionRoot :show="open" as="template">
-    <Dialog as="div" @close="toggleModal" class="relative z-10">
+    <Dialog as="div" @close="closeModal" class="relative z-10">
       <TransitionChild
         as="template"
         enter="duration-300 ease-out"
@@ -248,6 +255,114 @@ const { open, toggle: toggleModal } = useToggle()
                 <div class="mb-6">
                   <label>Longitude</label>
                   <input
+                    v-model="coordinates.longitude"
+                    type="number"
+                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+                    placeholder="Longitude"
+                    autocomplete="Off"
+                    required
+                  />
+                </div>
+                <button
+                  type="submit"
+                  class="w-full px-6 py-2 mt-6 bg-black border-2 border-black font-semibold text-white leading-tight rounded-sm shadow-md hover:border-2 hover:border-black hover:bg-white hover:shadow-lg hover:text-black transition duration-150 ease-in-out"
+                >
+                  Submit
+                </button>
+              </form>
+            </DialogPanel>
+          </TransitionChild>
+        </div>
+      </div>
+    </Dialog>
+  </TransitionRoot>
+
+  <!-- MODAL UPDATE SITE -->
+  <TransitionRoot :show="update" as="template">
+    <Dialog as="div" @close="closeUpdateModal" class="relative z-10">
+      <TransitionChild
+        as="template"
+        enter="duration-300 ease-out"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="duration-200 ease-in"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
+      >
+        <div class="fixed inset-0 bg-black bg-opacity-25" />
+      </TransitionChild>
+
+      <div class="fixed inset-0 overflow-y-auto">
+        <div
+          class="flex min-h-full items-center justify-center p-4 text-center"
+        >
+          <TransitionChild
+            as="template"
+            enter="duration-300 ease-out"
+            enter-from="opacity-0 scale-95"
+            enter-to="opacity-100 scale-100"
+            leave="duration-200 ease-in"
+            leave-from="opacity-100 scale-100"
+            leave-to="opacity-0 scale-95"
+          >
+            <DialogPanel
+              class="w-full max-w-sm transform overflow-hidden rounded-sm bg-white p-6 text-left align-middle shadow-xl transition-all"
+            >
+              <DialogTitle
+                as="h3"
+                class="mb-6 text-lg font-medium leading-6 text-gray-900"
+              >
+                Update SITE Entity
+              </DialogTitle>
+
+              <form @submit.prevent="handleUpdate" class="min-w-[300px]">
+                <div class="my-4 text-center"></div>
+
+                <div class="mb-6">
+                  <Input
+                    :model-value="site?.name"
+                    v-model="name"
+                    type="text"
+                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+                    placeholder="Name"
+                    autocomplete="Off"
+                    required
+                  />
+                </div>
+                <div class="mb-6">
+                  <Input
+                    v-model="address"
+                    type="text"
+                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+                    placeholder="Address"
+                    autocomplete="Off"
+                    required
+                  />
+                </div>
+                <div class="mb-6">
+                  <Input
+                    v-model="post_code"
+                    type="text"
+                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+                    placeholder="Post Code"
+                    autocomplete="Off"
+                    required
+                  />
+                </div>
+                <div class="mb-6">
+                  <label>Latitude</label>
+                  <Input
+                    v-model="coordinates.latitude"
+                    type="number"
+                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+                    placeholder="Latitude"
+                    autocomplete="Off"
+                    required
+                  />
+                </div>
+                <div class="mb-6">
+                  <label>Longitude</label>
+                  <Input
                     v-model="coordinates.longitude"
                     type="number"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
