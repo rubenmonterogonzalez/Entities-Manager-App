@@ -68,6 +68,15 @@ const handleSubmit = async () => {
   }
 };
 
+const handleUpdate = async (site: ISite) => {
+  try {
+    await siteStore.updateSite(site.id, site);
+    closeUpdateModal();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 /* MODAL NEW SITE */
 const open = ref(false);
 const openModal = () => {
@@ -157,7 +166,7 @@ const closeUpdateModal = async () => {
 
           <template #item-actions="site">
             <div class="flex space-x-4 text-gray-500">
-              <button @click="openUpdateModal(site.id)">
+              <button @click="openUpdateModal(site)">
                 <Icon size="18" name="simple-line-icons:pencil" />
               </button>
               <button @click="siteStore.deleteSite(site.id)">
