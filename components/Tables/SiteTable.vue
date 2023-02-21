@@ -63,6 +63,7 @@ const site = ref({
 const handleSubmitSite = async () => {
   try {
     await siteStore.addSite(site.value);
+    location.reload()
     closeModal();
   } catch (error) {
     console.log(error);

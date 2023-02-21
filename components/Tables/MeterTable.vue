@@ -53,7 +53,17 @@ const meter = ref({
 const handleSubmit = async () => {
   try {
     await meterStore.addMeter(meter.value);
+    location.reload()
     toggleModal();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const handleUpdate = async (meter: IMeter) => {
+  try {
+    await meterStore.updateMeter(meter.id, meter);
+    closeUpdateModal();
   } catch (error) {
     console.log(error);
   }
@@ -158,6 +168,7 @@ const closeUpdateModal = async () => {
     </div>
   </section>
 
+  <!-- /* MODAL NEW METER  */ -->
   <TransitionRoot :show="open" as="template">
     <Dialog as="div" @close="closeModal" class="relative z-10">
       <TransitionChild
@@ -220,6 +231,94 @@ const closeUpdateModal = async () => {
                 </div>
                 <div class="mb-6">
                   <input
+                    v-model="installation_date"
+                    type="date"
+                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+                    placeholder="Installation Date"
+                    autocomplete="Off"
+                    required
+                  />
+                </div>
+                <button
+                  type="submit"
+                  class="w-full px-6 py-2 mt-6 bg-black border-2 border-black font-semibold text-white leading-tight rounded-sm shadow-md hover:border-2 hover:border-black hover:bg-white hover:shadow-lg hover:text-black transition duration-150 ease-in-out"
+                >
+                  Submit
+                </button>
+              </form>
+            </DialogPanel>
+          </TransitionChild>
+        </div>
+      </div>
+    </Dialog>
+  </TransitionRoot>
+
+    <!-- /* MODAL UPDATE METER  */ -->
+  <TransitionRoot :show="update" as="template">
+    <Dialog as="div" @close="closeUpdateModal" class="relative z-10">
+      <TransitionChild
+        as="template"
+        enter="duration-300 ease-out"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="duration-200 ease-in"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
+      >
+        <div class="fixed inset-0 bg-black bg-opacity-25" />
+      </TransitionChild>
+
+      <div class="fixed inset-0 overflow-y-auto">
+        <div
+          class="flex min-h-full items-center justify-center p-4 text-center"
+        >
+          <TransitionChild
+            as="template"
+            enter="duration-300 ease-out"
+            enter-from="opacity-0 scale-95"
+            enter-to="opacity-100 scale-100"
+            leave="duration-200 ease-in"
+            leave-from="opacity-100 scale-100"
+            leave-to="opacity-0 scale-95"
+          >
+            <DialogPanel
+              class="w-full max-w-sm transform overflow-hidden rounded-sm bg-white p-6 text-left align-middle shadow-xl transition-all"
+            >
+              <DialogTitle
+                as="h3"
+                class="mb-6 text-lg font-medium leading-6 text-gray-900"
+              >
+                Update METER Entity
+              </DialogTitle>
+
+              <form @submit.prevent="handleUpdateSubmit" class="min-w-[300px]">
+                <div class="my-4 text-center"></div>
+
+                <div class="mb-6">
+                  <Input
+                  :model-value="meter?.name"
+                    v-model="name"
+                    type="text"
+                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+                    placeholder="Name"
+                    autocomplete="Off"
+                    required
+                  />
+                </div>
+                <div class="mb-6">
+                  <Input
+                  :model-value="meter?.serial_number"
+                    v-model="serial_number"
+                    type="text"
+                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+                    placeholder="Serial Number"
+                    autocomplete="Off"
+                    required
+                  />
+                </div>
+                <div class="mb-6">
+                  <Input
+                  :model-value="meter?.installation_date"
                     v-model="installation_date"
                     type="date"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"

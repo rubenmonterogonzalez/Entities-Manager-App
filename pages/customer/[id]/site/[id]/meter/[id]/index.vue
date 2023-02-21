@@ -3,6 +3,7 @@ import { IMeter } from "../../../../../../../types/index.ts";
 import { useMeterStore } from "../../../../../../../store/meterStore.ts";
 import { useForm } from "vee-validate";
 import Input from "~~/components/Forms/Input/Input.vue";
+import dayjs from "dayjs";
 import {
   Dialog,
   DialogPanel,
@@ -77,7 +78,7 @@ const deleteMeter = async (meter: any) => {
         <span><strong>Serial Number: </strong>{{ meter?.serial_number }}</span>
       </div>
       <div class="flex mb-3">
-        <span><strong>Installation Date: </strong>{{ meter?.installation_date }}</span>
+        <span><strong>Installation Date: </strong>{{ dayjs(meter?.installation_date).format("DD-MM-YYYY") }}</span>
       </div>
       <div class="flex ml-auto">
         <button
@@ -167,7 +168,7 @@ const deleteMeter = async (meter: any) => {
                       name="installation_date"
                       id="installation_date"
                       autocomplete="off"
-                      :model-value="meter?.installation_date"
+                      :model-value="dayjs(meter.installation_date).format('DD-MM-YYYY')"
                       class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     />
                   </div>
