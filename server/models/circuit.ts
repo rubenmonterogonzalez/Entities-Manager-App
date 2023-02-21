@@ -5,7 +5,7 @@ const sequelize = new Sequelize('entities_manager', 'root', '1234', {
   dialect: 'mysql',
 });
 
-const Circuit = sequelize.define("circuit", {
+const Circuit = sequelize.define("circuits", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -22,16 +22,25 @@ const Circuit = sequelize.define("circuit", {
   },
   meterId: {
     type: DataTypes.INTEGER,
+    allowNull: false,
   },
 },
-  { freezeTableName: true }
+  // { freezeTableName: true }
 );
 
 Meter.hasMany(Circuit, {
   as: 'circuit', foreignKey: 'meterId'
 });
+
 Circuit.belongsTo(Meter, {
   as: 'meter', foreignKey: 'meterId'
+});
+
+Circuit.beforeCreate(async (circuit) => {
+  const meter = await Meter.findByPk(circuit.meterId);
+  if (!meter) {
+    throw new Error('Meter not found');
+  }
 });
 
 Circuit.sync({ force: false });

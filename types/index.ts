@@ -23,7 +23,7 @@ export interface IMeter {
   name: string;
   installation_date: string;
   serial_number: string;
-  siteId?: string;
+  siteId?: string | string[];
 }
 
 export interface ICircuit {
@@ -31,5 +31,5 @@ export interface ICircuit {
   name: string;
   installation_date: string;
   is_main: boolean;
-  meterId?: string;
+  meterId?: string | string[];
 }

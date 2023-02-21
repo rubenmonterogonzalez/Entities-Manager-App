@@ -3,10 +3,6 @@ import { useCustomerStore } from "../../store/customerStore"
 import type { Header} from "vue3-easy-data-table";
 import dayjs from "dayjs";
 
-import CustomerModal from "../../components/Modals/CustomerModal.vue";
-import ConfirmationModal from "../../components/Modals/ConfirmationModal.vue"
-
-
 const headers: Header[] = [
   { text: "ID", value: "id", sortable: true, width: 100 },
   { text: "NAME", value: "fullname", sortable: true, width: 150 },

@@ -1,20 +1,19 @@
 <script setup lang="ts">
-import { useMeterStore } from "../../store/meterStore";
+import { useCircuitStore } from "../../store/circuitStore";
 
-const meterStore = useMeterStore();
+const circuitStore = useCircuitStore();
 
-const meters = await useAsyncData(() => meterStore.getMeters());
+const circuits = await useAsyncData(() => circuitStore.getCircuits());
 
 const selected = ref("");
 const router = useRouter();
 const route = useRoute();
-const siteId = route?.params?.id || "0";
-const meterBySiteId = await useAsyncData(() =>
-  meterStore.getMetersBySiteId(siteId)
+const meterId = route?.params?.id || "0";
+const circuitByMeterId = await useAsyncData(() =>
+  meterStore.getCircuitsByMeterId(meterId)
 );
 
-
-const options = JSON.parse(JSON.stringify(meters.data.value));
+const options = JSON.parse(JSON.stringify(circuits.data.value));
 
 const onSelectChange = (event: any) => {
   selected.value = event.target.value;
@@ -23,7 +22,7 @@ const onSelectChange = (event: any) => {
 const handleSubmit = async () => {
   try {
     const data = selected.value;
-    router.push ({ path:  route.path + `/${selected.value}` });
+    router.push({ path: route.path + `/${selected.value}` });
   } catch (error) {
     console.log(error);
   }
@@ -38,7 +37,7 @@ const handleSubmit = async () => {
       <form @submit.prevent="handleSubmit">
         <div class="my-4 text-center">
           <h2 class="font-bold text-xl max-w-[240px] m-auto leading-6 mb-2">
-            METER Entity
+            CIRCUIT Entity
           </h2>
 
           <select

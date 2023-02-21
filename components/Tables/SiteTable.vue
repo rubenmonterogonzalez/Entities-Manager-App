@@ -27,7 +27,7 @@ const headers: Header[] = [
 const siteStore = useSiteStore();
 const customerStore = useCustomerStore();
 
-siteStore.getSites();
+
 const sites = await useAsyncData(() => siteStore.getSites());
 const customers = await useAsyncData(() => customerStore.getCustomers());
 const search = ref("");
@@ -108,7 +108,6 @@ const closeUpdateModal = async () => {
 <template>
   <section class="bg-black px-5 mx-auto pt-2">
     <div
-      v-if="siteStore.site.length > 0"
       class="bg-white border-[1px] border-gray-300 flex flex-col items-center justify-between mt-5 px-4 py-2 space-y-2 xs:space-y-0 xs:flex-row"
     >
       <div

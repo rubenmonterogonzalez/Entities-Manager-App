@@ -38,12 +38,13 @@ export const useMeterStore = defineStore("meter-store", {
     },
     async addMeter(meter: IMeter) {
       try {
-        await $fetch("/api/meter/add", {
+        const data = await $fetch("/api/meter/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: meter,
         })
         useToast().success("Meter has been created.");
+        return data
       } catch (error: any) {
         useToast().error(error.data.message);
         console.log(error)

@@ -5,7 +5,7 @@ const sequelize = new Sequelize('entities_manager', 'root', '1234', {
   dialect: 'mysql',
 });
 
-const Meter = sequelize.define("meter", {
+const Meter = sequelize.define("meters", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -23,9 +23,10 @@ const Meter = sequelize.define("meter", {
   },
   siteId: {
     type: DataTypes.INTEGER,
+    allowNull: false,
   },
 },
-  { freezeTableName: true }
+  // { freezeTableName: true }
 );
 
 Site.hasMany(Meter, { 
@@ -34,6 +35,13 @@ Site.hasMany(Meter, {
 
 Meter.belongsTo(Site, {
   as: 'site', foreignKey: 'siteId' 
+});
+
+Meter.beforeCreate(async (meter) => {
+  const site = await Site.findByPk(meter.siteId);
+  if (!site) {
+    throw new Error('Site not found');
+  }
 });
 
 Meter.sync({ force: false })

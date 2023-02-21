@@ -4,7 +4,7 @@ const sequelize = new Sequelize('entities_manager', 'root', '1234', {
   dialect: 'mysql',
 });
 
-const Customer = sequelize.define("customer", {
+const Customer = sequelize.define("customers", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -22,7 +22,7 @@ const Customer = sequelize.define("customer", {
     unique: true,
   },
 },
-  { freezeTableName: true }
+  // { freezeTableName: true }
 );
 
 Customer.sync({ force: false });

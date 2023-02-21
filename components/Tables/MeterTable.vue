@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useMeterStore } from "../../store/meterStore";
+import { useSiteStore } from "../../store/siteStore";
 import type { Header } from "vue3-easy-data-table";
 import Input from "~~/components/Forms/Input/Input.vue";
 import { useForm } from "vee-validate";
@@ -22,13 +23,21 @@ const headers: Header[] = [
 ];
 
 const meterStore = useMeterStore();
+const siteStore = useSiteStore();
 
 const meters = await useAsyncData(() => meterStore.getMeters());
-
+const sites = await useAsyncData(() => siteStore.getSites());
 const search = ref("");
 
 /* FORM */
 const router = useRouter();
+const route = useRoute();
+const siteId = route?.params?.id || "0";
+const meterBySiteId = await useAsyncData(() =>
+  meterStore.getMetersBySiteId(siteId)
+);
+
+const metersArray = ref([meterBySiteId.data.value.data][0]);
 
 const name = ref("");
 const serial_number = ref("");
@@ -38,24 +47,47 @@ const meter = ref({
   name,
   serial_number,
   installation_date,
+  siteId,
 });
 
 const handleSubmit = async () => {
   try {
     await meterStore.addMeter(meter.value);
-    closeModal();
-    router.push({ path: "/circuit" });
+    toggleModal();
   } catch (error) {
     console.log(error);
   }
 };
-const { open, toggle: toggleModal } = useToggle()
+
+/* MODAL NEW METER */
+const open = ref(false);
+const openModal = () => {
+  open.value = true;
+};
+const closeModal = async () => {
+  open.value = false;
+};
+
+/* MODAL UPDATE SITMETER */
+
+const update = ref(false);
+
+const openUpdateModal = (meter: IMeter) => {
+  if (meter) {
+    JSON.parse(JSON.stringify({ ...meter }));
+  }
+  update.value = true;
+};
+
+const closeUpdateModal = async () => {
+  update.value = false;
+};
 </script>
 
 <template>
   <section class="bg-black min-h-[50vh] px-5 mx-auto pt-2">
     <div
-    v-if="meterStore.meter.length > 0"
+    
       class="bg-white border-[1px] border-gray-300 flex flex-col items-center justify-between mt-5 px-4 py-2 space-y-2 xs:space-y-0 xs:flex-row"
     >
       <div
@@ -79,7 +111,7 @@ const { open, toggle: toggleModal } = useToggle()
       </div>
       <div>
         <button
-          @click="toggleModal"
+          @click="openModal"
           class="bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white text-sm whitespace-nowrap hover:border-2 hover:border-black hover:bg-white hover:text-black"
         >
           New METER Entity
@@ -95,7 +127,7 @@ const { open, toggle: toggleModal } = useToggle()
           theme-color="#f97316"
           table-class-name="eztble"
           :headers="headers"
-          :items="meterStore.meter"
+          :items="metersArray"
           alternating
         >
           <template #item-id="{ id }">
@@ -111,12 +143,12 @@ const { open, toggle: toggleModal } = useToggle()
             <span>{{ dayjs(installation_date).format("DD-MM-YYYY") }}</span>
           </template>
 
-           <template #item-actions="site">
+           <template #item-actions="meter">
             <div class="flex space-x-4 text-gray-500">
-              <button @click="toggleModal">
+              <button @click="openUpdateModal(meter)">
                 <Icon size="18" name="simple-line-icons:pencil" />
               </button>
-              <button @click="siteStore.deleteSite(meter.id)">
+              <button @click="meterStore.deleteMeter(meter.id)">
                 <Icon size="18" name="simple-line-icons:trash" />
               </button>
             </div>
@@ -127,7 +159,7 @@ const { open, toggle: toggleModal } = useToggle()
   </section>
 
   <TransitionRoot :show="open" as="template">
-    <Dialog as="div" @close="toggleModal" class="relative z-10">
+    <Dialog as="div" @close="closeModal" class="relative z-10">
       <TransitionChild
         as="template"
         enter="duration-300 ease-out"
