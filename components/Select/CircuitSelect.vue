@@ -13,7 +13,9 @@ const circuitByMeterId = await useAsyncData(() =>
   meterStore.getCircuitsByMeterId(meterId)
 );
 
-const options = JSON.parse(JSON.stringify(circuits.data.value));
+const circuitsArray = ref([circuitByMeterId.data.value.data][0]);
+
+const options = JSON.parse(JSON.stringify(circuitsArray.value));
 
 const onSelectChange = (event: any) => {
   selected.value = event.target.value;

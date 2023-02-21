@@ -13,8 +13,9 @@ const meterBySiteId = await useAsyncData(() =>
   meterStore.getMetersBySiteId(siteId)
 );
 
+const metersArray = ref([meterBySiteId.data.value.data][0]);
 
-const options = JSON.parse(JSON.stringify(meters.data.value));
+const options = JSON.parse(JSON.stringify(metersArray.value));
 
 const onSelectChange = (event: any) => {
   selected.value = event.target.value;

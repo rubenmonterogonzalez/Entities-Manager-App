@@ -4,15 +4,19 @@ import type { Header} from "vue3-easy-data-table";
 import dayjs from "dayjs";
 
 const headers: Header[] = [
-  { text: "ID", value: "id", sortable: true, width: 100 },
-  { text: "NAME", value: "fullname", sortable: true, width: 150 },
+  { text: "ID (Customer)", value: "id", sortable: true, width: 50 },
+  { text: "NAME", value: "fullname", sortable: true, width: 100 },
   { text: "EMAIL", value: "email", width: 100 },
   { text: "VAT NUMBER", value: "vat_number", width: 100 },
+  { text: "ID (Site)", value: "siteId", sortable: true, width: 50 },
   { text: "LATITUDE", value: "coordinates.latitude", width: 100 },
   { text: "LONGITUDE", value: "coordinates.longitude", width: 100 },
   { text: "ADDRESS", value: "address", width: 150 },
   { text: "POST CODE", value: "post_code", width: 100 },
+  { text: "ID (Meter)", value: "meterId", sortable: true, width: 50 },
   { text: "SERIAL NUMBER", value: "serial_number", width: 100 },
+  { text: "INSTALLATION DATE", value: "installation_date", sortable: true, width: 100 },
+  { text: "ID (Circuit)", value: "meterId", sortable: true, width: 50 },
   { text: "INSTALLATION DATE", value: "installation_date", sortable: true, width: 100 },
   { text: "MAIN", value: "is_main", sortable: true, width: 100 },
   { text: "Actions", value: "actions", width: 100 },
@@ -38,12 +42,12 @@ const search = ref("");
         <input placeholder="Search..." v-model="search" type="text" name="search" autocomplete="off"
           class="border-[1px] border-gray-300 outline-none px-5 py-2 rounded-sm text-sm w-72 placeholder:text-sm" />
       </div>
-      <div>
+      <!-- <div>
         <button @click="customerModal.openModal()"
           class="bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white text-sm whitespace-nowrap hover:border-2 hover:border-black hover:bg-white hover:text-black">
           New Customer
         </button>
-      </div>
+      </div> -->
     </div>
 
     <div class="relative">
@@ -89,12 +93,9 @@ const search = ref("");
               <button @click="customerModal.openModal(customer)">
                 <Icon size="18" name="simple-line-icons:pencil" />
               </button>
-              <button @click="confirmationModal.openModal(customer)">
+              <button @click="deleteCustomer(customer)">
                 <Icon size="18" name="simple-line-icons:trash" />
               </button>
-              <!-- <button @click="deleteCustomer(customer)">
-                <Icon size="18" name="simple-line-icons:trash" />
-              </button> -->
             </div>
           </template>
         </EasyDataTable>
