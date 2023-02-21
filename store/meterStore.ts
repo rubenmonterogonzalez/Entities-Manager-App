@@ -4,7 +4,9 @@ import { useToast } from "vue-toastification";
 
 export const useMeterStore = defineStore("meter-store", {
   state: () => ({
+    siteId: null,
     meter: [] as IMeter[],
+    selectedMeter: null as null | IMeter
   }),
   actions: {
     async getMeters() {
@@ -12,6 +14,24 @@ export const useMeterStore = defineStore("meter-store", {
         let data = await $fetch<IMeter[]>("/api/meter");
         this.meter = data;
         return data as IMeter[];
+      } catch (error: any) {
+        useToast().error(error.message);
+      }
+    },
+    async getMeter(id: string | number | string[] | number[]) {
+      try {
+        let data = await $fetch<IMeter>(`/api/meter/${id}`);
+        this.selectedMeter = data;
+        return data as IMeter;
+      } catch (error: any) {
+        useToast().error(error.message);
+      }
+    },
+    async getMetersBySiteId(siteId: string | number | string[] | number[]) {
+      try {
+        let data = await $fetch<IMeter>(`/api/meter/siteId/${siteId}`);
+        this.selectedMeter = data;
+        return data as IMeter;
       } catch (error: any) {
         useToast().error(error.message);
       }
@@ -60,8 +80,11 @@ export const useMeterStore = defineStore("meter-store", {
     },
   },
   getters: {
-    getMeter: (state) => {
-      return state.meter
+    getMeterState: (state) => {
+      return state.selectedMeter
+    },
+    siteMeters: (state) => {
+      return state.meter.filter(m => m.siteId === state.siteId)
     },
   }
 });

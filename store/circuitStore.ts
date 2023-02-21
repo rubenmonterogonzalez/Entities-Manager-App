@@ -4,7 +4,9 @@ import { useToast } from "vue-toastification";
 
 export const useCircuitStore = defineStore("circuit-store", {
   state: () => ({
+    meterId: null,
     circuit: [] as ICircuit[],
+    selectedCircuit: null as null | ICircuit
   }),
   actions: {
     async getCircuits() {
@@ -12,6 +14,24 @@ export const useCircuitStore = defineStore("circuit-store", {
         let data = await $fetch<ICircuit[]>("/api/circuit");
         this.circuit = data;
         return data as ICircuit[];
+      } catch (error: any) {
+        useToast().error(error.message);
+      }
+    },
+    async getCircuit(id: string | number | string[] | number[]) {
+      try {
+        let data = await $fetch<ICircuit>(`/api/circuit/${id}`);
+        this.selectedCircuit = data;
+        return data as ICircuit;
+      } catch (error: any) {
+        useToast().error(error.message);
+      }
+    },
+    async getCircuitsByMeterId(meterId: string | number | string[] | number[]) {
+      try {
+        let data = await $fetch<ICircuit>(`/api/circuit/meterId/${meterId}`);
+        this.selectedCircuit = data;
+        return data as ICircuit;
       } catch (error: any) {
         useToast().error(error.message);
       }
@@ -60,8 +80,11 @@ export const useCircuitStore = defineStore("circuit-store", {
     },
   },
   getters: {
-    getCircuit: (state) => {
-      return state.circuit
+    getCircuitState: (state) => {
+      return state.selectedCircuit
     },
+    meterCircuit: (state) => {
+      return state.circuit.filter(c => c.meterId === state.meterId)
+    }
   }
 });

@@ -4,6 +4,7 @@ import type { Header } from "vue3-easy-data-table";
 import Input from "~~/components/Forms/Input/Input.vue";
 import { useCustomerStore } from "../../store/customerStore";
 import { ISite } from "../../types/index";
+import { useForm } from "vee-validate";
 import {
   Dialog,
   DialogPanel,
@@ -59,7 +60,7 @@ const site = ref({
   customerId,
 });
 
-const handleSubmit = async () => {
+const handleSubmitSite = async () => {
   try {
     await siteStore.addSite(site.value);
     closeModal();
@@ -91,12 +92,17 @@ const closeModal = async () => {
 const update = ref(false);
 
 const openUpdateModal = (site: ISite) => {
+  if (site) {
+    JSON.parse(JSON.stringify({ ...site }));
+  }
   update.value = true;
 };
 
 const closeUpdateModal = async () => {
   update.value = false;
 };
+ 
+
 </script>
 
 <template>
@@ -217,7 +223,7 @@ const closeUpdateModal = async () => {
                 Create a new SITE Entity
               </DialogTitle>
 
-              <form @submit.prevent="handleSubmit" class="min-w-[300px]">
+              <form @submit.prevent="handleSubmitSite" class="min-w-[300px]">
                 <div class="my-4 text-center"></div>
 
                 <div class="mb-6">
@@ -340,6 +346,7 @@ const closeUpdateModal = async () => {
                 </div>
                 <div class="mb-6">
                   <Input
+                    :model-value="site?.address"
                     v-model="address"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
@@ -350,6 +357,7 @@ const closeUpdateModal = async () => {
                 </div>
                 <div class="mb-6">
                   <Input
+                    :model-value="site?.post_code"
                     v-model="post_code"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
@@ -361,6 +369,7 @@ const closeUpdateModal = async () => {
                 <div class="mb-6">
                   <label>Latitude</label>
                   <Input
+                    :model-value="site?.coordinates.latitude"
                     v-model="coordinates.latitude"
                     type="number"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
@@ -372,6 +381,7 @@ const closeUpdateModal = async () => {
                 <div class="mb-6">
                   <label>Longitude</label>
                   <Input
+                    :model-value="site?.coordinates.longitude"
                     v-model="coordinates.longitude"
                     type="number"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
