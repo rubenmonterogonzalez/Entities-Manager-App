@@ -27,7 +27,6 @@ const headers: Header[] = [
 const siteStore = useSiteStore();
 const customerStore = useCustomerStore();
 
-
 const sites = await useAsyncData(() => siteStore.getSites());
 const customers = await useAsyncData(() => customerStore.getCustomers());
 const search = ref("");
@@ -63,17 +62,8 @@ const site = ref({
 const handleSubmitSite = async () => {
   try {
     await siteStore.addSite(site.value);
-    location.reload()
+    location.reload();
     closeModal();
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const handleUpdate = async (site: ISite) => {
-  try {
-    await siteStore.updateSite(site.id, site);
-    closeUpdateModal();
   } catch (error) {
     console.log(error);
   }
@@ -81,6 +71,7 @@ const handleUpdate = async (site: ISite) => {
 
 /* MODAL NEW SITE */
 const open = ref(false);
+
 const openModal = () => {
   open.value = true;
 };
@@ -89,21 +80,28 @@ const closeModal = async () => {
 };
 
 /* MODAL UPDATE SITE */
-
 const update = ref(false);
 
 const openUpdateModal = (site: ISite) => {
+  console.log(site)
   if (site) {
     JSON.parse(JSON.stringify({ ...site }));
   }
   update.value = true;
 };
 
+const handleUpdate = async () => {
+  try {
+    await siteStore.updateSite(site.id, site);
+    closeUpdateModal();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const closeUpdateModal = async () => {
   update.value = false;
 };
- 
-
 </script>
 
 <template>
@@ -342,7 +340,7 @@ const closeUpdateModal = async () => {
                     placeholder="Name"
                     autocomplete="Off"
                     required
-                  />
+                  /> 
                 </div>
                 <div class="mb-6">
                   <Input
