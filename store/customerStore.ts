@@ -17,9 +17,9 @@ export const useCustomerStore = defineStore("customer-store", {
         useToast().error(error.message);
       }
     },
-    async getCustomer(id: string | number | string[] | number[]) {
+    async getCustomer(customerId: string | number | string[] | number[]) {
       try {
-        let data = await $fetch<ICustomer>(`/api/customer/${id}`);
+        let data = await $fetch<ICustomer>(`/api/customer/${customerId}`);
         this.selectedCustomer = data;
         return data as ICustomer;
       } catch (error: any) {

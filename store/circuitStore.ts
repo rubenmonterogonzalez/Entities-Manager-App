@@ -18,9 +18,9 @@ export const useCircuitStore = defineStore("circuit-store", {
         useToast().error(error.message);
       }
     },
-    async getCircuit(id: string | number | string[] | number[]) {
+    async getCircuit(circuitId: string | number | string[] | number[]) {
       try {
-        let data = await $fetch<ICircuit>(`/api/circuit/${id}`);
+        let data = await $fetch<ICircuit>(`/api/circuit/${circuitId}`);
         this.selectedCircuit = data;
         return data as ICircuit;
       } catch (error: any) {

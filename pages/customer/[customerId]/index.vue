@@ -13,7 +13,7 @@ import {
 
 // get route param id
 const route = useRoute()
-const customerId = route?.params?.id || '0'
+const customerId = route?.params?.customerId || '0'
 
 const router = useRouter();
 

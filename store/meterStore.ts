@@ -18,9 +18,9 @@ export const useMeterStore = defineStore("meter-store", {
         useToast().error(error.message);
       }
     },
-    async getMeter(id: string | number | string[] | number[]) {
+    async getMeter(meterId: string | number | string[] | number[]) {
       try {
-        let data = await $fetch<IMeter>(`/api/meter/${id}`);
+        let data = await $fetch<IMeter>(`/api/meter/${meterId}`);
         this.selectedMeter = data;
         return data as IMeter;
       } catch (error: any) {

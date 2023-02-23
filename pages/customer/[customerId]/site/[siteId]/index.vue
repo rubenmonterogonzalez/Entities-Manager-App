@@ -13,7 +13,7 @@ import {
 
 // get route param id
 const route = useRoute()
-const siteId = route?.params?.id || '0';
+const siteId = route?.params?.siteId || '0';
 
 const router = useRouter();
 const currentRoute = router.currentRoute.value.href

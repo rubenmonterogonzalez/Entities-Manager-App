@@ -18,9 +18,9 @@ export const useSiteStore = defineStore("site-store", {
         useToast().error(error.message);
       }
     },
-    async getSite(id: string | number | string[] | number[]) {
+    async getSite(siteId: string | number | string[] | number[]) {
       try {
-        let data = await $fetch<ISite>(`/api/site/${id}`);
+        let data = await $fetch<ISite>(`/api/site/${siteId}`);
         this.selectedSite = data;
         return data as ISite;
       } catch (error: any) {

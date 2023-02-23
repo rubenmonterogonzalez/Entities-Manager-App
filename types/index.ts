@@ -1,5 +1,5 @@
 export interface ICustomer {
-  id?: string;
+  customerId?: string | number;
   name: string;
   email: string;
   vat_number: string;
@@ -7,7 +7,7 @@ export interface ICustomer {
 }
 
 export interface ISite {
-  id?: string;
+  siteId?: string | number;
   name: string;
   address: string;
   post_code: string;
@@ -19,7 +19,7 @@ export interface ISite {
 }
 
 export interface IMeter {
-  id?: string;
+  meterId?: string | number;
   name: string;
   installation_date: string;
   serial_number: string;
@@ -27,7 +27,7 @@ export interface IMeter {
 }
 
 export interface ICircuit {
-  id?: string;
+  circuitId?: string | number;
   name: string;
   installation_date: string;
   is_main: boolean;

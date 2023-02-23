@@ -32,7 +32,7 @@ const search = ref("");
 /* FORM */
 const router = useRouter();
 const route = useRoute();
-const siteId = route?.params?.id || "0";
+const siteId = route?.params?.siteId || "0";
 const meterBySiteId = await useAsyncData(() =>
   meterStore.getMetersBySiteId(siteId)
 );

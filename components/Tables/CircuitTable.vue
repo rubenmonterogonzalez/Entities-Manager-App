@@ -34,7 +34,7 @@ const search = ref("");
 /* FORM */
 const router = useRouter();
 const route = useRoute();
-const meterId = route?.params?.id || "0";
+const meterId = route?.params?.meterId || "0";
 const circuitByMeterId = await useAsyncData(() =>
   circuitStore.getCircuitsByMeterId(meterId)
 );

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { IMeter } from "../../../../../../../types/index.ts";
-import { useMeterStore } from "../../../../../../../store/meterStore.ts";
-import { useForm } from "vee-validate";
 import Input from "~~/components/Forms/Input/Input.vue";
+import { useCircuitStore } from "~~/store/circuitStore.ts";
+import { useForm } from "vee-validate";
+import { ICircuit } from "~~/types/index.ts";
 import dayjs from "dayjs";
 import {
   Dialog,
@@ -14,32 +14,36 @@ import {
 
 // get route param id
 const route = useRoute();
-const meterId = route?.params?.id || "0";
+const circuitId = route?.params?.circuitId || "0";
 
 const router = useRouter();
 const currentRoute = router.currentRoute.value.href;
 
 /* CARD */
-const meterStore = useMeterStore();
-const meters = await useAsyncData(() => meterStore.getMeters());
-const meterById = await useAsyncData(() => meterStore.getMeter(meterId));
+const circuitStore = useCircuitStore();
+const circuits = await useAsyncData(() => circuitStore.getCircuits());
+const circuitById = await useAsyncData(() =>
+  circuitStore.getCircuit(circuitId)
+);
 
 /* MODAL */
-const meter = ref<IMeter | undefined | null>(meterById?.data?.value?.data);
+const circuit = ref<ICircuit | undefined | null>(
+  circuitById?.data?.value?.data
+);
 
-const refetchMeter = async () => {
-  const req = await meterStore.getMeter(meterId);
+const refetchCircuit = async () => {
+  const req = await circuitStore.getCircuit(circuitId);
   const { data } = req;
-  meter.value = data;
+  circuit.value = data;
 };
 
 const { handleSubmit } = useForm({
-  initialValues: meter,
+  initialValues: circuit,
 });
 
-const submitMeter = handleSubmit(async (values) => {
-  await meterStore.updateMeter(meterId, { ...values });
-  await refetchMeter();
+const submitCircuit = handleSubmit(async (values) => {
+  await circuitStore.updateCircuit(circuitId, { ...values });
+  await refetchCircuit();
   closeModal();
 });
 
@@ -51,12 +55,12 @@ const openModal = async () => {
 
 const closeModal = async () => {
   open.value = false;
-  await refetchMeter();
+  await refetchCircuit();
 };
 
 /*DELETE*/
-const deleteMeter = async (meter: any) => {
-  await meterStore.deleteMeter(meter.id);
+const deleteCircuit = async (site: any) => {
+  await siteCircuit.deleteCircuit(circuit.id);
   router.back();
 };
 </script>
@@ -68,17 +72,20 @@ const deleteMeter = async (meter: any) => {
     >
       <div class="my-4 text-center">
         <h2 class="font-bold text-xl max-w-[240px] m-auto leading-6 mb-2">
-          METER Entity
+          CIRCUIT Entity
         </h2>
       </div>
       <div class="flex mb-3">
-        <span><strong>Name: </strong>{{ meter?.name }}</span>
+        <span><strong>Name: </strong>{{ circuit?.name }}</span>
       </div>
       <div class="flex mb-3">
-        <span><strong>Serial Number: </strong>{{ meter?.serial_number }}</span>
+        <span
+          ><strong>Installation date: </strong
+          >{{ dayjs(circuit.installation_date).format("DD-MM-YYYY") }}</span
+        >
       </div>
       <div class="flex mb-3">
-        <span><strong>Installation Date: </strong>{{ dayjs(meter?.installation_date).format("DD-MM-YYYY") }}</span>
+        <span><strong>Main: </strong>{{ circuit?.is_main }}</span>
       </div>
       <div class="flex ml-auto">
         <button
@@ -91,7 +98,7 @@ const deleteMeter = async (meter: any) => {
         </button>
         <button
           class="ml-1 bg-red-600 border-2 border-red-600 font-bold px-4 py-2 rounded-sm text-white hover:border-2 hover:border-black hover:bg-white hover:text-black"
-          @click="deleteMeter(meter)"
+          @click="deleteCircuit(circuit)"
         >
           Delete
           <Icon size="18" name="simple-line-icons:trash" />
@@ -134,30 +141,19 @@ const deleteMeter = async (meter: any) => {
                 as="h3"
                 class="text-lg font-medium leading-6 text-gray-900"
               >
-                Edit METER {{ meter?.name }}
+                Edit CIRCUIT {{ circuit?.name }}
               </DialogTitle>
 
-              <form @submit.prevent="submitMeter" class="mt-5">
+              <form @submit.prevent="submitCircuit" class="mt-5">
                 <div class="">
                   <div class="col-span-1">
                     <Input
-                    :model-value="meter?.name"
                       label="Name"
                       type="text"
                       name="name"
                       id="name"
                       autocomplete="off"
-                      class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
-                    />
-                  </div>
-                  <div class="col-span-1">
-                    <Input
-                    :model-value="meter?.serial_number"
-                      label="Serial Number"
-                      type="text"
-                      name="serial_number"
-                      id="serial_number"
-                      autocomplete="off"
+                      :model-value="circuit?.name"
                       class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     />
                   </div>
@@ -168,7 +164,18 @@ const deleteMeter = async (meter: any) => {
                       name="installation_date"
                       id="installation_date"
                       autocomplete="off"
-                      :model-value="dayjs(meter.installation_date).format('DD-MM-YYYY')"
+                      :model-value="dayjs(circuit.installation_date).format('DD-MM-YYYY')"
+                      class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+                    />
+                  </div>
+                  <div class="col-span-1">
+                    <Input
+                      label="Main"
+                      type="text"
+                      name="is_main"
+                      id="is_main"
+                      autocomplete="off"
+                      :model-value="circuit?.is_main"
                       class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     />
                   </div>
@@ -199,9 +206,9 @@ const deleteMeter = async (meter: any) => {
 
   <div class="flex">
     <NuxtLink
-      :to="`${currentRoute}/circuit`"
+      :to="`/manager`"
       class="mx-auto bg-white border-2 border-white font-bold px-4 py-2 rounded-sm text-black hover:border-2 hover:border-white hover:bg-black hover:text-white"
-      >Create CIRCUIT</NuxtLink
+      >Go to MANAGER</NuxtLink
     >
   </div>
 </template>

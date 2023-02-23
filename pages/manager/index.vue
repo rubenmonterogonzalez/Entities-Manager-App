@@ -26,8 +26,8 @@ const customerStore = useCustomerStore();
 
 await useAsyncData(() => customerStore.getCustomers());
 
-const confirmationModal = ref()
-const customerModal = ref();
+// const confirmationModal = ref()
+// const customerModal = ref();
 const search = ref("");
 
 </script>
@@ -103,6 +103,6 @@ const search = ref("");
     </div>
   </main>
 
-  <CustomerModal ref="customerModal" />
-  <ConfirmationModal ref="confirmationModal" />
+  <!-- <CustomerModal ref="customerModal" /> -->
+  <!-- <ConfirmationModal ref="confirmationModal" /> -->
 </template>

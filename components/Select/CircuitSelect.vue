@@ -8,13 +8,12 @@ const circuits = await useAsyncData(() => circuitStore.getCircuits());
 const selected = ref("");
 const router = useRouter();
 const route = useRoute();
-const meterId = route?.params?.id || "0";
+const meterId = route?.params?.meterId || "0";
 const circuitByMeterId = await useAsyncData(() =>
-  meterStore.getCircuitsByMeterId(meterId)
+  circuitStore.getCircuitsByMeterId(meterId)
 );
 
 const circuitsArray = ref([circuitByMeterId.data.value.data][0]);
-
 const options = JSON.parse(JSON.stringify(circuitsArray.value));
 
 const onSelectChange = (event: any) => {
