@@ -80,23 +80,29 @@ const closeModal = async () => {
 };
 
 /* MODAL UPDATE SITE */
+const form = ref({});
+
 const update = ref(false);
 
+const { handleSubmit } = useForm({
+  initialValues: form,
+});
+
+const handleUpdate = handleSubmit(async (values) => {
+  if (!form.value.id) {
+    await siteStore.addSite({ ...values });
+    closeUpdateModal();
+  } else {
+    await siteStore.updateSite(form.value.id, { ...values });
+    closeUpdateModal();
+  }
+});
+
 const openUpdateModal = (site: ISite) => {
-  console.log(site)
   if (site) {
-    JSON.parse(JSON.stringify({ ...site }));
+    form.value = JSON.parse(JSON.stringify({ ...site }));
   }
   update.value = true;
-};
-
-const handleUpdate = async () => {
-  try {
-    await siteStore.updateSite(site.id, site);
-    closeUpdateModal();
-  } catch (error) {
-    console.log(error);
-  }
 };
 
 const closeUpdateModal = async () => {
@@ -328,9 +334,13 @@ const closeUpdateModal = async () => {
                 Update SITE Entity
               </DialogTitle>
 
-              <form @submit.prevent="handleUpdate" class="min-w-[300px]">
+              <form
+                @submit.prevent="handleUpdate"
+                ref="form"
+                class="min-w-[300px]"
+              >
                 <div class="my-4 text-center"></div>
-
+<!-- 
                 <div class="mb-6">
                   <Input
                     :model-value="site?.name"
@@ -340,9 +350,9 @@ const closeUpdateModal = async () => {
                     placeholder="Name"
                     autocomplete="Off"
                     required
-                  /> 
-                </div>
-                <div class="mb-6">
+                  />
+                </div> -->
+                <!-- <div class="mb-6">
                   <Input
                     :model-value="site?.address"
                     v-model="address"
@@ -387,7 +397,7 @@ const closeUpdateModal = async () => {
                     autocomplete="Off"
                     required
                   />
-                </div>
+                </div> -->
                 <button
                   type="submit"
                   class="w-full px-6 py-2 mt-6 bg-black border-2 border-black font-semibold text-white leading-tight rounded-sm shadow-md hover:border-2 hover:border-black hover:bg-white hover:shadow-lg hover:text-black transition duration-150 ease-in-out"
