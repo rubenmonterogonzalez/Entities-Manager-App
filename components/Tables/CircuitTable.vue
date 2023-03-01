@@ -3,6 +3,7 @@ import { useCircuitStore } from "../../store/circuitStore";
 import { useMeterStore } from "../../store/meterStore";
 import type { Header } from "vue3-easy-data-table";
 import Input from "~~/components/Forms/Input/Input.vue";
+import DateInput from '~~/components/Forms/Input/DateInput.vue'
 import { onMounted } from "vue";
 import { useForm } from "vee-validate";
 import dayjs from "dayjs";
@@ -232,7 +233,7 @@ const closeUpdateModal = async () => {
                     v-model="circuit.is_main"
                   />
                   <label for="is_main" class="ml-1">{{
-                    is_main ? "Yes" : "No"
+                    circuit.is_main ? "Yes" : "No"
                   }}</label>
                 </div>
                 <button
@@ -301,13 +302,10 @@ const closeUpdateModal = async () => {
                   />
                 </div>
                 <div class="mb-6">
-                  <Input
+                  <DateInput
                     v-model="circuit.installation_date"
-                    type="date"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Installation Date"
-                    autocomplete="Off"
-                    required
                   />
                 </div>
                 <label class="text-lg">Main</label>

@@ -85,7 +85,7 @@ const deleteCircuit = async (site: any) => {
         >
       </div>
       <div class="flex mb-3">
-        <span><strong>Main: </strong>{{ circuit?.is_main }}</span>
+        <span><strong>Main: </strong>{{ circuit.is_main ? "Yes" : "No" }}</span>
       </div>
       <div class="flex ml-auto">
         <button
@@ -164,7 +164,9 @@ const deleteCircuit = async (site: any) => {
                       name="installation_date"
                       id="installation_date"
                       autocomplete="off"
-                      :model-value="dayjs(circuit.installation_date).format('DD-MM-YYYY')"
+                      :model-value="
+                        dayjs(circuit.installation_date).format('DD-MM-YYYY')
+                      "
                       class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     />
                   </div>
