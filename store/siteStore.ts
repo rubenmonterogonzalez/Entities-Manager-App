@@ -49,13 +49,11 @@ export const useSiteStore = defineStore("site-store", {
         useToast().error(error.data.message);
         console.log(error)
       } finally {
-        async () => {
-          await this.getSites();
-        }
+        await this.getSites();
       }
     },
-    async updateSite(id: string, site: ISite) {
-      await $fetch(`/api/site/${id}`, {
+    async updateSite(site: ISite) {
+      await $fetch(`/api/site/${site.id}`, {
         method: "PUT",
         body: site,
       })

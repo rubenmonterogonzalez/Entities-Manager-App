@@ -5,6 +5,7 @@ import type { Header } from "vue3-easy-data-table";
 import Input from "~~/components/Forms/Input/Input.vue";
 import { useForm } from "vee-validate";
 import dayjs from "dayjs";
+import { IMeter } from '../../types/index';
 import {
   Dialog,
   DialogPanel,
@@ -33,37 +34,26 @@ const search = ref("");
 const router = useRouter();
 const route = useRoute();
 const siteId = route?.params?.siteId || "0";
-const meterBySiteId = await useAsyncData(() =>
-  meterStore.getMetersBySiteId(siteId)
-);
 
-const metersArray = ref([meterBySiteId.data.value.data][0]);
+const metersArray = computed(() => {
+  return meterStore.meter.filter(m => m.siteId === Number(siteId))
+})
 
-const name = ref("");
-const serial_number = ref("");
-const installation_date = ref("");
-
-const meter = ref({
-  name,
-  serial_number,
-  installation_date,
+// Default Meter
+const emptyMeter = () =>({
+  name: "",
+  serial_number: "",
+  installation_date: "",
   siteId,
 });
+
+// New or Updating Meter
+const meter = ref(emptyMeter());
 
 const handleSubmit = async () => {
   try {
     await meterStore.addMeter(meter.value);
-    location.reload()
-    toggleModal();
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const handleUpdate = async (meter: IMeter) => {
-  try {
-    await meterStore.updateMeter(meter.id, meter);
-    closeUpdateModal();
+    closeModal();
   } catch (error) {
     console.log(error);
   }
@@ -71,7 +61,9 @@ const handleUpdate = async (meter: IMeter) => {
 
 /* MODAL NEW METER */
 const open = ref(false);
+
 const openModal = () => {
+  meter.value = emptyMeter();
   open.value = true;
 };
 const closeModal = async () => {
@@ -82,9 +74,14 @@ const closeModal = async () => {
 
 const update = ref(false);
 
-const openUpdateModal = (meter: IMeter) => {
-  if (meter) {
-    JSON.parse(JSON.stringify({ ...meter }));
+const handleUpdate = async () => {
+  await meterStore.updateMeter(meter.value);
+  closeUpdateModal();
+};
+
+const openUpdateModal = (meterToUpdate: IMeter) => {
+  if (meterToUpdate) {
+    meter.value = JSON.parse(JSON.stringify({ ...meterToUpdate }));
   }
   update.value = true;
 };
@@ -97,7 +94,6 @@ const closeUpdateModal = async () => {
 <template>
   <section class="bg-black min-h-[50vh] px-5 mx-auto pt-2">
     <div
-    
       class="bg-white border-[1px] border-gray-300 flex flex-col items-center justify-between mt-5 px-4 py-2 space-y-2 xs:space-y-0 xs:flex-row"
     >
       <div
@@ -153,7 +149,7 @@ const closeUpdateModal = async () => {
             <span>{{ dayjs(installation_date).format("DD-MM-YYYY") }}</span>
           </template>
 
-           <template #item-actions="meter">
+          <template #item-actions="meter">
             <div class="flex space-x-4 text-gray-500">
               <button @click="openUpdateModal(meter)">
                 <Icon size="18" name="simple-line-icons:pencil" />
@@ -211,7 +207,7 @@ const closeUpdateModal = async () => {
 
                 <div class="mb-6">
                   <input
-                    v-model="name"
+                    v-model="meter.name"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Name"
@@ -221,7 +217,7 @@ const closeUpdateModal = async () => {
                 </div>
                 <div class="mb-6">
                   <input
-                    v-model="serial_number"
+                    v-model="meter.serial_number"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Serial Number"
@@ -231,7 +227,7 @@ const closeUpdateModal = async () => {
                 </div>
                 <div class="mb-6">
                   <input
-                    v-model="installation_date"
+                    v-model="meter.installation_date"
                     type="date"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Installation Date"
@@ -253,7 +249,7 @@ const closeUpdateModal = async () => {
     </Dialog>
   </TransitionRoot>
 
-    <!-- /* MODAL UPDATE METER  */ -->
+  <!-- /* MODAL UPDATE METER  */ -->
   <TransitionRoot :show="update" as="template">
     <Dialog as="div" @close="closeUpdateModal" class="relative z-10">
       <TransitionChild
@@ -291,13 +287,12 @@ const closeUpdateModal = async () => {
                 Update METER Entity
               </DialogTitle>
 
-              <form @submit.prevent="handleUpdateSubmit" class="min-w-[300px]">
+              <form @submit.prevent="handleUpdate" class="min-w-[300px]">
                 <div class="my-4 text-center"></div>
 
                 <div class="mb-6">
                   <Input
-                  :model-value="meter?.name"
-                    v-model="name"
+                    v-model="meter.name"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Name"
@@ -307,8 +302,7 @@ const closeUpdateModal = async () => {
                 </div>
                 <div class="mb-6">
                   <Input
-                  :model-value="meter?.serial_number"
-                    v-model="serial_number"
+                    v-model="meter.serial_number"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Serial Number"
@@ -318,8 +312,7 @@ const closeUpdateModal = async () => {
                 </div>
                 <div class="mb-6">
                   <Input
-                  :model-value="meter?.installation_date"
-                    v-model="installation_date"
+                    v-model="meter.installation_date"
                     type="date"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Installation Date"

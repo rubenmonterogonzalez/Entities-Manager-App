@@ -6,7 +6,7 @@ const props = defineProps({
   name: String,
   rules: String,
   value: String,
-  modelValue: [String, Number],
+  modelValue: [String, Number, Boolean],
 });
 
 const { errorMessage, value } = useField(ref(props.name), props.rules, {

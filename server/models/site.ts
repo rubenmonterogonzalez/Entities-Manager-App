@@ -1,5 +1,6 @@
 import { Sequelize, DataTypes } from "sequelize";
 import Customer from './customer';
+
 const sequelize = new Sequelize('entities_manager', 'root', '1234', {
   host: 'localhost',
   dialect: 'mysql',
@@ -25,7 +26,7 @@ const Site = sequelize.define("sites", {
   },
   customerId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    // allowNull: false,
   },
 },
   // { freezeTableName: true }

@@ -49,13 +49,11 @@ export const useMeterStore = defineStore("meter-store", {
         useToast().error(error.data.message);
         console.log(error)
       } finally {
-        async () => {
-          await this.getMeters();
-        }
+        await this.getMeters();
       }
     },
-    async updateMeter(id: string, meter: IMeter) {
-      await $fetch(`/api/meter/${id}`, {
+    async updateMeter(meter: IMeter) {
+      await $fetch(`/api/meter/${meter.id}`, {
         method: "PUT",
         body: meter,
       })

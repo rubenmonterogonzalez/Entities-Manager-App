@@ -48,13 +48,11 @@ export const useCircuitStore = defineStore("circuit-store", {
         useToast().error(error.data.message);
         console.log(error)
       } finally {
-        async () => {
-          await this.getCircuits();
-        }
+        await this.getCircuits();
       }
     },
-    async updateCircuit(id: string, circuit: ICircuit) {
-      await $fetch(`/api/circuit/${id}`, {
+    async updateCircuit(circuit: ICircuit) {
+      await $fetch(`/api/circuit/${circuit.id}`, {
         method: "PUT",
         body: circuit,
       })

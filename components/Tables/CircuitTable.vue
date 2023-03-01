@@ -35,40 +35,26 @@ const search = ref("");
 const router = useRouter();
 const route = useRoute();
 const meterId = route?.params?.meterId || "0";
-const circuitByMeterId = await useAsyncData(() =>
-  circuitStore.getCircuitsByMeterId(meterId)
-);
 
-const circuitsArray = ref([circuitByMeterId.data.value.data][0]);
+const circuitsArray = computed(() => {
+  return circuitStore.circuit.filter((c) => c.meterId === Number(meterId));
+});
 
-const name = ref("");
-const installation_date = ref("");
-const is_main = ref(true);
-const circuit = ref({
-  name,
-  installation_date,
-  is_main,
+// Default Circuit
+const emptyCircuit = () => ({
+  name: "",
+  installation_date: "",
+  is_main: true,
   meterId,
 });
 
-// onMounted(() => {
-//   is_main.value = is_main.value === 'Yes' ? 1 : 0;
-// });
+// New or Updating Circuit
+const circuit = ref(emptyCircuit());
 
 const handleSubmit = async () => {
   try {
     await circuitStore.addCircuit(circuit.value);
-    location.reload();
     closeModal();
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const handleUpdate = async (circuit: ICircuit) => {
-  try {
-    await circuitStore.updateCircuit(circuit.id, circuit);
-    closeUpdateModal();
   } catch (error) {
     console.log(error);
   }
@@ -77,18 +63,23 @@ const handleUpdate = async (circuit: ICircuit) => {
 const open = ref(false);
 
 const openModal = () => {
+  circuit.value = emptyCircuit();
   open.value = true;
 };
 const closeModal = () => {
-  // circuit.value = {};
   open.value = false;
 };
 
 const update = ref(false);
 
-const openUpdateModal = (circuit: ICircuit) => {
-  if (circuit) {
-    JSON.parse(JSON.stringify({ ...circuit }));
+const handleUpdate = async () => {
+  await circuitStore.updateCircuit(circuit.value);
+  closeUpdateModal();
+};
+
+const openUpdateModal = (circuitToUpdate: ICircuit) => {
+  if (circuitToUpdate) {
+    circuit.value = JSON.parse(JSON.stringify({ ...circuitToUpdate }));
   }
   update.value = true;
 };
@@ -96,6 +87,7 @@ const openUpdateModal = (circuit: ICircuit) => {
 const closeUpdateModal = async () => {
   update.value = false;
 };
+
 </script>
 
 <template>
@@ -214,7 +206,7 @@ const closeUpdateModal = async () => {
 
                 <div class="mb-6">
                   <input
-                    v-model="name"
+                    v-model="circuit.name"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Name"
@@ -224,7 +216,7 @@ const closeUpdateModal = async () => {
                 </div>
                 <div class="mb-6">
                   <input
-                    v-model="installation_date"
+                    v-model="circuit.installation_date"
                     type="date"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Installation Date"
@@ -234,7 +226,11 @@ const closeUpdateModal = async () => {
                 </div>
                 <label class="text-lg">Main</label>
                 <div>
-                  <input type="checkbox" name="is_main" v-model="is_main" />
+                  <input
+                    type="checkbox"
+                    name="is_main"
+                    v-model="circuit.is_main"
+                  />
                   <label for="is_main" class="ml-1">{{
                     is_main ? "Yes" : "No"
                   }}</label>
@@ -291,13 +287,12 @@ const closeUpdateModal = async () => {
                 Update CIRCUIT Entity
               </DialogTitle>
 
-              <form @submit.prevent="handleUpdateSubmit" class="min-w-[300px]">
+              <form @submit.prevent="handleUpdate" class="min-w-[300px]">
                 <div class="my-4 text-center"></div>
 
                 <div class="mb-6">
-                  <input
-                    :model-value="circuit?.name"
-                    v-model="name"
+                  <Input
+                    v-model="circuit.name"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Name"
@@ -306,9 +301,8 @@ const closeUpdateModal = async () => {
                   />
                 </div>
                 <div class="mb-6">
-                  <input
-                    :model-value="circuit?.installation_date"
-                    v-model="installation_date"
+                  <Input
+                    v-model="circuit.installation_date"
                     type="date"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Installation Date"
@@ -317,10 +311,15 @@ const closeUpdateModal = async () => {
                   />
                 </div>
                 <label class="text-lg">Main</label>
-                <div>
-                  <input type="checkbox" name="is_main" v-model="is_main" />
-                  <label for="is_main" class="ml-1">{{
-                    is_main ? "Yes" : "No"
+                <div class="flex w-10">
+                  <Input
+                    class="mr-auto"
+                    type="checkbox"
+                    name="is_main"
+                    v-model="circuit.is_main"
+                  />
+                  <label for="is_main" class="mt-[-6px]">{{
+                    circuit.is_main ? "Yes" : "No"
                   }}</label>
                 </div>
                 <button

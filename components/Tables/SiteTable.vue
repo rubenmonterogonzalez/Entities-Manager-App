@@ -5,6 +5,7 @@ import Input from "~~/components/Forms/Input/Input.vue";
 import { useCustomerStore } from "../../store/customerStore";
 import { ISite } from "../../types/index";
 import { useForm } from "vee-validate";
+import { onMounted } from 'vue';
 import {
   Dialog,
   DialogPanel,
@@ -34,35 +35,30 @@ const search = ref("");
 /* FORM */
 const router = useRouter();
 const route = useRoute();
-const customerId = route?.params?.customerId || "0";
-const siteByCustomerId = await useAsyncData(() =>
-  siteStore.getSitesByCustomerId(customerId)
-);
+const customerId = route?.params?.customerId || 0;
 
-const sitesArray = ref([siteByCustomerId.data.value.data][0]);
+const sitesArray = computed(() => {
+  return siteStore.site.filter(s => s.customerId === Number(customerId))
+})
 
-const name = ref("");
-const latitude = ref(0);
-const longitude = ref(0);
-const coordinates = ref({
-  latitude,
-  longitude,
-});
-const address = ref("");
-const post_code = ref("");
-
-const site = ref({
-  name,
-  coordinates,
-  address,
-  post_code,
+// Default Site
+const emptySite = () => ({
+  name: '',
+  coordinates: {
+    latitude: null,
+    longitude: null,
+  },
+  address: '',
+  post_code: '',
   customerId,
-});
+})
+
+// New or Updating Site
+const site = ref(emptySite());
 
 const handleSubmitSite = async () => {
   try {
     await siteStore.addSite(site.value);
-    location.reload();
     closeModal();
   } catch (error) {
     console.log(error);
@@ -73,6 +69,7 @@ const handleSubmitSite = async () => {
 const open = ref(false);
 
 const openModal = () => {
+  site.value = emptySite();
   open.value = true;
 };
 const closeModal = async () => {
@@ -80,27 +77,17 @@ const closeModal = async () => {
 };
 
 /* MODAL UPDATE SITE */
-const form = ref({});
 
 const update = ref(false);
 
-const { handleSubmit } = useForm({
-  initialValues: form,
-});
+const handleUpdate = async () => {
+  await siteStore.updateSite(site.value);
+  closeUpdateModal();
+};
 
-const handleUpdate = handleSubmit(async (values) => {
-  if (!form.value.id) {
-    await siteStore.addSite({ ...values });
-    closeUpdateModal();
-  } else {
-    await siteStore.updateSite(form.value.id, { ...values });
-    closeUpdateModal();
-  }
-});
-
-const openUpdateModal = (site: ISite) => {
-  if (site) {
-    form.value = JSON.parse(JSON.stringify({ ...site }));
+const openUpdateModal = (siteToUpdate: ISite) => {
+  if (siteToUpdate) {
+    site.value = JSON.parse(JSON.stringify({ ...siteToUpdate }));
   }
   update.value = true;
 };
@@ -232,7 +219,7 @@ const closeUpdateModal = async () => {
 
                 <div class="mb-6">
                   <input
-                    v-model="name"
+                    v-model="site.name"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Name"
@@ -242,7 +229,7 @@ const closeUpdateModal = async () => {
                 </div>
                 <div class="mb-6">
                   <input
-                    v-model="address"
+                    v-model="site.address"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Address"
@@ -252,7 +239,7 @@ const closeUpdateModal = async () => {
                 </div>
                 <div class="mb-6">
                   <input
-                    v-model="post_code"
+                    v-model="site.post_code"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Post Code"
@@ -263,7 +250,7 @@ const closeUpdateModal = async () => {
                 <div class="mb-6">
                   <label>Latitude</label>
                   <input
-                    v-model="coordinates.latitude"
+                    v-model="site.coordinates.latitude"
                     type="number"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Latitude"
@@ -274,7 +261,7 @@ const closeUpdateModal = async () => {
                 <div class="mb-6">
                   <label>Longitude</label>
                   <input
-                    v-model="coordinates.longitude"
+                    v-model="site.coordinates.longitude"
                     type="number"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Longitude"
@@ -340,22 +327,20 @@ const closeUpdateModal = async () => {
                 class="min-w-[300px]"
               >
                 <div class="my-4 text-center"></div>
-<!-- 
+                
                 <div class="mb-6">
                   <Input
-                    :model-value="site?.name"
-                    v-model="name"
+                    v-model="site.name"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Name"
                     autocomplete="Off"
                     required
                   />
-                </div> -->
-                <!-- <div class="mb-6">
+                </div>
+                <div class="mb-6">
                   <Input
-                    :model-value="site?.address"
-                    v-model="address"
+                    v-model="site.address"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Address"
@@ -365,8 +350,7 @@ const closeUpdateModal = async () => {
                 </div>
                 <div class="mb-6">
                   <Input
-                    :model-value="site?.post_code"
-                    v-model="post_code"
+                    v-model="site.post_code"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Post Code"
@@ -377,8 +361,7 @@ const closeUpdateModal = async () => {
                 <div class="mb-6">
                   <label>Latitude</label>
                   <Input
-                    :model-value="site?.coordinates.latitude"
-                    v-model="coordinates.latitude"
+                    v-model="site.coordinates.latitude"
                     type="number"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Latitude"
@@ -389,15 +372,14 @@ const closeUpdateModal = async () => {
                 <div class="mb-6">
                   <label>Longitude</label>
                   <Input
-                    :model-value="site?.coordinates.longitude"
-                    v-model="coordinates.longitude"
+                    v-model="site.coordinates.longitude"
                     type="number"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Longitude"
                     autocomplete="Off"
                     required
                   />
-                </div> -->
+                </div>
                 <button
                   type="submit"
                   class="w-full px-6 py-2 mt-6 bg-black border-2 border-black font-semibold text-white leading-tight rounded-sm shadow-md hover:border-2 hover:border-black hover:bg-white hover:shadow-lg hover:text-black transition duration-150 ease-in-out"
