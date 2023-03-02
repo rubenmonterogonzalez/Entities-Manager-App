@@ -11,7 +11,7 @@ export const useMeterStore = defineStore("meter-store", {
   actions: {
     async getMeters() {
       try {
-        let data = await $fetch<IMeter[]>("/api/meter");
+        let data = await $fetch<IMeter[]>("/api/meters");
         this.meter = data;
         return data as IMeter[];
       } catch (error: any) {
@@ -20,7 +20,7 @@ export const useMeterStore = defineStore("meter-store", {
     },
     async getMeter(meterId: string | number | string[] | number[]) {
       try {
-        let data = await $fetch<IMeter>(`/api/meter/${meterId}`);
+        let data = await $fetch<IMeter>(`/api/meters/${meterId}`);
         this.selectedMeter = data;
         return data as IMeter;
       } catch (error: any) {
@@ -29,7 +29,7 @@ export const useMeterStore = defineStore("meter-store", {
     },
     async getMetersBySiteId(siteId: string | number | string[] | number[]) {
       try {
-        let data = await $fetch<IMeter>(`/api/meter/siteId/${siteId}`);
+        let data = await $fetch<IMeter>(`/api/meters/siteId/${siteId}`);
         this.selectedMeter = data;
         return data as IMeter;
       } catch (error: any) {
@@ -38,7 +38,7 @@ export const useMeterStore = defineStore("meter-store", {
     },
     async addMeter(meter: IMeter) {
       try {
-        const data = await $fetch("/api/meter/add", {
+        const data = await $fetch("/api/meters/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: meter,
@@ -53,7 +53,7 @@ export const useMeterStore = defineStore("meter-store", {
       }
     },
     async updateMeter(meter: IMeter) {
-      await $fetch(`/api/meter/${meter.id}`, {
+      await $fetch(`/api/meters/${meter.id}`, {
         method: "PUT",
         body: meter,
       })
@@ -66,7 +66,7 @@ export const useMeterStore = defineStore("meter-store", {
         });
     },
     async deleteMeter(id: string) {
-      await $fetch(`/api/meter/${id}`, {
+      await $fetch(`/api/meters/${id}`, {
         method: "DELETE",
       })
         .catch((e) => {

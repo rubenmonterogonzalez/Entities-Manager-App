@@ -5,19 +5,15 @@ const customerStore = useCustomerStore();
 
 const router = useRouter();
 
-const name = ref("");
-const email = ref("");
-const vat_number = ref("");
-
-const customer = ref({
-  name,
-  email,
-  vat_number,
+const customer = reactive({
+  name: "",
+  email: "",
+  vat_number: "",
 });
 
 const handleSubmit = async () => {
   try {
-    const data = await customerStore.addCustomer(customer.value);
+    const data = await customerStore.addCustomer(customer);
     router.push({ path: `/customers/${data?.data?.id}` });
   } catch (error) {
     console.log(error);
@@ -36,17 +32,17 @@ const handleSubmit = async () => {
           </h2>
         </div>
         <div class="mb-6">
-          <input v-model="name" type="text"
+          <input v-model="customer.name" type="text"
             class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
             placeholder="Name" autocomplete="Off" required />
         </div>
         <div class="mb-6">
-          <input v-model="email" type="email"
+          <input v-model="customer.email" type="email"
             class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
             placeholder="Example@example.com" autocomplete="Off" required />
         </div>
         <div class="mb-6">
-          <input v-model="vat_number" type="text"
+          <input v-model="customer.vat_number" type="text"
             class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
             placeholder="VAT-Number" autocomplete="Off" required />
         </div>

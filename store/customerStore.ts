@@ -10,7 +10,7 @@ export const useCustomerStore = defineStore("customer-store", {
   actions: {
     async getCustomers() {
       try {
-        let data = await $fetch<ICustomer[]>("/api/customer");
+        let data = await $fetch<ICustomer[]>("/api/customers");
         this.customer = data;
         return data as ICustomer[];
       } catch (error: any) {
@@ -19,7 +19,7 @@ export const useCustomerStore = defineStore("customer-store", {
     },
     async getCustomer(customerId: string | number | string[] | number[]) {
       try {
-        let data = await $fetch<ICustomer>(`/api/customer/${customerId}`);
+        let data = await $fetch<ICustomer>(`/api/customers/${customerId}`);
         this.selectedCustomer = data;
         return data as ICustomer;
       } catch (error: any) {
@@ -28,7 +28,7 @@ export const useCustomerStore = defineStore("customer-store", {
     },
     async addCustomer(customer: ICustomer) {
       try {
-        const data = await $fetch("/api/customer/add", {
+        const data = await $fetch("/api/customers/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: customer,
@@ -46,7 +46,7 @@ export const useCustomerStore = defineStore("customer-store", {
       }
     },
     async updateCustomer(id: string | string[], customer: ICustomer) {
-      await $fetch(`/api/customer/${id}`, {
+      await $fetch(`/api/customers/${id}`, {
         method: "PUT",
         body: customer,
       })
@@ -59,7 +59,7 @@ export const useCustomerStore = defineStore("customer-store", {
         });
     },
     async deleteCustomer(id: string) {
-      await $fetch(`/api/customer/${id}`, {
+      await $fetch(`/api/customers/${id}`, {
         method: "DELETE",
       })
         .catch((e) => {

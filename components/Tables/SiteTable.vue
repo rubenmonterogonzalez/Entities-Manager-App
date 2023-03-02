@@ -13,6 +13,8 @@ import {
   TransitionRoot,
   TransitionChild,
 } from "@headlessui/vue";
+import { useEntitiesStore } from '../../store/entitiesStore';
+
 
 /* TABLE */
 const headers: Header[] = [
@@ -25,11 +27,21 @@ const headers: Header[] = [
   { text: "ACTIONS", value: "actions", width: 25 },
 ];
 
-const siteStore = useSiteStore();
-const customerStore = useCustomerStore();
+//TEST
+const entitiesStore = useEntitiesStore();
+onMounted(() => {
+   entitiesStore.init()
+})
 
-const sites = await useAsyncData(() => siteStore.getSites());
-const customers = await useAsyncData(() => customerStore.getCustomers());
+// console.log(entitiesStore.sites)
+
+
+
+// const siteStore = useSiteStore();
+// const customerStore = useCustomerStore();
+
+// const sites = await useAsyncData(() => siteStore.getSites());
+// const customers = await useAsyncData(() => customerStore.getCustomers());
 const search = ref("");
 
 /* FORM */
@@ -38,7 +50,7 @@ const route = useRoute();
 const customerId = route?.params?.customerId || 0;
 
 const sitesArray = computed(() => {
-  return siteStore.site.filter((s) => s.customerId === Number(customerId));
+  // return siteStore.site.filter((s) => s.customerId === Number(customerId));
 });
 
 // Default Site
@@ -139,7 +151,7 @@ const closeUpdateModal = async () => {
           theme-color="#f97316"
           table-class-name="eztble"
           :headers="headers"
-          :items="sitesArray"
+          :items="entitiesStore.sites"
           alternating
         >
           <template #item-id="{ id }">

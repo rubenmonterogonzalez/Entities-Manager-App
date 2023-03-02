@@ -11,7 +11,7 @@ export const useCircuitStore = defineStore("circuit-store", {
   actions: {
     async getCircuits() {
       try {
-        let data = await $fetch<ICircuit[]>("/api/circuit");
+        let data = await $fetch<ICircuit[]>("/api/circuits");
         this.circuit = data;
         return data as ICircuit[];
       } catch (error: any) {
@@ -20,7 +20,7 @@ export const useCircuitStore = defineStore("circuit-store", {
     },
     async getCircuit(circuitId: string | number | string[] | number[]) {
       try {
-        let data = await $fetch<ICircuit>(`/api/circuit/${circuitId}`);
+        let data = await $fetch<ICircuit>(`/api/circuits/${circuitId}`);
         this.selectedCircuit = data;
         return data as ICircuit;
       } catch (error: any) {
@@ -29,7 +29,7 @@ export const useCircuitStore = defineStore("circuit-store", {
     },
     async getCircuitsByMeterId(meterId: string | number | string[] | number[]) {
       try {
-        let data = await $fetch<ICircuit>(`/api/circuit/meterId/${meterId}`);
+        let data = await $fetch<ICircuit>(`/api/circuits/meterId/${meterId}`);
         this.selectedCircuit = data;
         return data as ICircuit;
       } catch (error: any) {
@@ -38,7 +38,7 @@ export const useCircuitStore = defineStore("circuit-store", {
     },
     async addCircuit(circuit: ICircuit) {
       try {
-        await $fetch("/api/circuit/add", {
+        await $fetch("/api/circuits/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: circuit,
@@ -52,7 +52,7 @@ export const useCircuitStore = defineStore("circuit-store", {
       }
     },
     async updateCircuit(circuit: ICircuit) {
-      await $fetch(`/api/circuit/${circuit.id}`, {
+      await $fetch(`/api/circuits/${circuit.id}`, {
         method: "PUT",
         body: circuit,
       })
@@ -65,7 +65,7 @@ export const useCircuitStore = defineStore("circuit-store", {
         });
     },
     async deleteCircuit(id: string) {
-      await $fetch(`/api/circuit/${id}`, {
+      await $fetch(`/api/circuits/${id}`, {
         method: "DELETE",
       })
         .catch((e) => {
