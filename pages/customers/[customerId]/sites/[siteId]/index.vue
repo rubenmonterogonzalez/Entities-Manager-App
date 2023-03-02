@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ICustomer } from "../../../types/index";
-import { useCustomerStore } from "../../../store/customerStore";
+import { ISite } from "../../../../../types/index.ts";
+import { useSiteStore } from "../../../../../store/siteStore";
 import { useForm } from "vee-validate";
 import Input from "~~/components/Forms/Input/Input.vue";
 import {
@@ -13,31 +13,32 @@ import {
 
 // get route param id
 const route = useRoute()
-const customerId = route?.params?.customerId || '0'
+const siteId = route?.params?.siteId || '0';
 
 const router = useRouter();
+const currentRoute = router.currentRoute.value.href
 
 /* CARD */
-const customerStore = useCustomerStore();
-const customers = await useAsyncData(() => customerStore.getCustomers());
-const customerById = await useAsyncData(() => customerStore.getCustomer(customerId))
+const siteStore = useSiteStore();
+const sites = await useAsyncData(() => siteStore.getSites());
+const siteById = await useAsyncData(() => siteStore.getSite(siteId))
 
 /* MODAL */
-const customer = ref<ICustomer | undefined | null>(customerById?.data?.value?.data);
+const site = ref<ISite | undefined | null>(siteById?.data?.value?.data);
 
-const refetchCustomer = async () => {
-  const req = await customerStore.getCustomer(customerId)
+const refetchSite = async () => {
+  const req = await siteStore.getSite(siteId)
   const { data } = req;
-  customer.value = data
+  site.value = data
 }
 
 const { handleSubmit } = useForm({
-  initialValues: customer,
+  initialValues: site,
 });
 
-const submitCustomer = handleSubmit(async (values) => {
-  await customerStore.updateCustomer(customerId, { ...values });
-  await refetchCustomer();
+const submitSite = handleSubmit(async (values) => {
+  await siteStore.updateSite(siteId, { ...values });
+  await refetchSite();
   closeModal();
 });
 
@@ -49,44 +50,59 @@ const openModal = async () => {
 
 const closeModal = async () => {
   open.value = false;
-  await refetchCustomer();
+  await refetchSite();
 };
 
 /*DELETE*/
-const deleteCustomer = async (customer: any) => {
-  await customerStore.deleteCustomer(customer.id);
-  router.push({ path: "/customer" });
+const deleteSite = async (site: any) => {
+  await siteStore.deleteSite(site.id);
+  router.back()
 };
-
 </script>
-
 
 <template>
   <section class="bg-black flex justify-center py-6">
-    <div class="block m-auto px-6 py-3 rounded-sm shadow-lg bg-white max-w-md min-w-[350px]">
+    <div
+      class="block m-auto px-6 py-3 rounded-sm shadow-lg bg-white max-w-md min-w-[350px]"
+    >
       <div class="my-4 text-center">
         <h2 class="font-bold text-xl max-w-[240px] m-auto leading-6 mb-2">
-          CUSTOMER Entity
+          SITE Entity
         </h2>
       </div>
       <div class="flex mb-3">
-        <span><strong>Name: </strong>{{ customer?.name }}</span>
+        <span><strong>Name: </strong>{{ site?.name }}</span>
       </div>
       <div class="flex mb-3">
-        <span><strong>Email: </strong>{{ customer?.email }}</span>
+        <span><strong>Address: </strong>{{ site?.address }}</span>
       </div>
       <div class="flex mb-3">
-        <span><strong>VAT-Number: </strong>{{ customer?.vat_number }}</span>
+        <span><strong>Post Code: </strong>{{ site?.post_code }}</span>
+      </div>
+      <div class="flex mb-3">
+        <span><strong>Latitude: </strong>{{ site?.coordinates.latitude }}</span>
+      </div>
+      <div class="flex mb-3">
+        <span><strong>Longitude: </strong>{{ site?.coordinates.longitude }}</span>
       </div>
       <div class="flex ml-auto">
-        <button type="button" @click="openModal()"
-          class="ml-auto bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white hover:border-2 hover:border-black hover:bg-white hover:text-black">
+      <NuxtLink
+          :to="`${currentRoute}/meters`"
+          class="mx-auto mr-1 bg-white border-2 border-black font-bold px-4 py-2 rounded-sm text-black hover:border-2 hover:border-black hover:bg-black hover:text-white"
+          >View METERS</NuxtLink
+        >
+        <button
+          type="button"
+          @click="openModal()"
+          class="ml-auto bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white hover:border-2 hover:border-black hover:bg-white hover:text-black"
+        >
           Edit
           <Icon size="18" name="simple-line-icons:pencil" class="ml-2" />
         </button>
         <button
           class="ml-1 bg-red-600 border-2 border-red-600 font-bold px-4 py-2 rounded-sm text-white hover:border-2 hover:border-black hover:bg-white hover:text-black"
-          @click="deleteCustomer(customer)">
+          @click="deleteSite(site)"
+        >
           Delete
           <Icon size="18" name="simple-line-icons:trash" />
         </button>
@@ -109,24 +125,34 @@ const deleteCustomer = async (customer: any) => {
             <DialogPanel
               class="w-full max-w-sm transform overflow-hidden rounded-sm bg-white p-6 text-left align-middle shadow-xl transition-all">
               <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">
-                Edit CUSTOMER {{ customer?.name }}
+                Edit SITE {{ site?.name }}
               </DialogTitle>
 
-              <form @submit.prevent="submitCustomer" class="mt-5">
+              <form @submit.prevent="submitSite" class="mt-5">
                 <div class="">
                   <div class="col-span-1">
                     <Input label="Name" type="text" name="name" id="name" autocomplete="off"
-                      :model-value="customer?.name"
+                      :model-value="site?.name"
                       class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none" />
                   </div>
                   <div class="col-span-1">
-                    <Input label="Email" type="text" name="email" id="email" autocomplete="off"
-                      :model-value="customer?.email"
+                    <Input label="Address" type="text" name="address" id="address" autocomplete="off"
+                      :model-value="site?.address"
                       class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none" />
                   </div>
                   <div class="col-span-1">
-                    <Input label="Vat Number" type="text" name="vat_number" id="vat_number" autocomplete="off"
-                      :model-value="customer?.vat_number"
+                    <Input label="Post Code" type="text" name="post_code" id="post_code" autocomplete="off"
+                      :model-value="site?.post_code"
+                      class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none" />
+                  </div>
+                  <div class="col-span-1">
+                    <Input label="Latitude" type="number" name="latitude" id="latitude" autocomplete="off"
+                      :model-value="site?.coordinates.latitude"
+                      class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none" />
+                  </div>
+                  <div class="col-span-1">
+                    <Input label="Longitude" type="number" name="longitude" id="longitude" autocomplete="off"
+                      :model-value="site?.coordinates.longitude"
                       class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none" />
                   </div>
                 </div>
@@ -148,12 +174,4 @@ const deleteCustomer = async (customer: any) => {
       </div>
     </Dialog>
   </TransitionRoot>
-
-  <div class="flex">
-    <NuxtLink :to="`/customer/${customerId}/site`"
-    class="mx-auto bg-white border-2 border-white font-bold px-4 py-2 rounded-sm text-black hover:border-2 hover:border-white hover:bg-black hover:text-white">Create SITE</NuxtLink>
-  </div>
-
 </template>
-
-

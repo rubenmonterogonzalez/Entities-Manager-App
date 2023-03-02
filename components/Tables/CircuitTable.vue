@@ -3,7 +3,7 @@ import { useCircuitStore } from "../../store/circuitStore";
 import { useMeterStore } from "../../store/meterStore";
 import type { Header } from "vue3-easy-data-table";
 import Input from "~~/components/Forms/Input/Input.vue";
-import DateInput from '~~/components/Forms/Input/DateInput.vue'
+import DateInput from "~~/components/Forms/Input/DateInput.vue";
 import { onMounted } from "vue";
 import { useForm } from "vee-validate";
 import dayjs from "dayjs";
@@ -34,6 +34,7 @@ const search = ref("");
 
 /* FORM */
 const router = useRouter();
+const currentRoute = router.currentRoute.value.href;
 const route = useRoute();
 const meterId = route?.params?.meterId || "0";
 
@@ -88,7 +89,6 @@ const openUpdateModal = (circuitToUpdate: ICircuit) => {
 const closeUpdateModal = async () => {
   update.value = false;
 };
-
 </script>
 
 <template>
@@ -118,9 +118,9 @@ const closeUpdateModal = async () => {
       <div>
         <button
           @click="openModal"
-          class="bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white text-sm whitespace-nowrap hover:border-2 hover:border-black hover:bg-white hover:text-black"
+          class="bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white text-lg whitespace-nowrap hover:border-2 hover:border-black hover:bg-white hover:text-black"
         >
-          New CIRCUIT Entity
+          +
         </button>
       </div>
     </div>
@@ -151,6 +151,9 @@ const closeUpdateModal = async () => {
 
           <template #item-actions="circuit">
             <div class="flex space-x-4 text-gray-500">
+              <NuxtLink :to="`${currentRoute}/${circuit.id}`" class="">
+                <Icon size="18" name="simple-line-icons:eye" />
+              </NuxtLink>
               <button @click="openUpdateModal(circuit)">
                 <Icon size="18" name="simple-line-icons:pencil" />
               </button>

@@ -18,7 +18,7 @@ const customer = ref({
 const handleSubmit = async () => {
   try {
     const data = await customerStore.addCustomer(customer.value);
-    router.push({ path: `/customer/${data?.data?.id}` });
+    router.push({ path: `/customers/${data?.data?.id}` });
   } catch (error) {
     console.log(error);
   }

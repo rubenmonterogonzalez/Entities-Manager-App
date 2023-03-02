@@ -13,9 +13,14 @@ const siteByCustomerId = await useAsyncData(() =>
   siteStore.getSitesByCustomerId(customerId)
 );
 
-const sitesArray = ref([siteByCustomerId.data.value.data][0]);
+// const sitesArray = ref([siteByCustomerId.data.value.data][0]);
 
-const options = JSON.parse(JSON.stringify(sitesArray.value));
+const sitesArray = computed(() => {
+  return siteStore.site.filter(s => s.customerId === Number(customerId))
+})
+console.log(sitesArray.value)
+
+// const options = JSON.parse(JSON.stringify(sitesArray.value));
 
 const onSelectChange = (event: any) => {
   selected.value = event.target.value;
@@ -24,7 +29,7 @@ const onSelectChange = (event: any) => {
 const handleSubmit = async () => {
   try {
     const data = selected.value;
-    router.push({ path: `/customer/${customerId}/site/${selected.value}` });
+    router.push({ path: `/customers/${customerId}/sites/${selected.value}` });
   } catch (error) {
     console.log(error);
   }
@@ -51,8 +56,8 @@ const handleSubmit = async () => {
           >
             <option disabled value="">Please select one</option>
             <option
-              v-for="option in options"
-              :value="JSON.stringify(option.id)"
+              v-for="option in sitesArray"
+              :value="option.id"
             >
               {{ option.id }} - {{ option.name }}
             </option>

@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import Input from "~~/components/Forms/Input/Input.vue";
-import { useCircuitStore } from "~~/store/circuitStore.ts";
+import { ICustomer } from "../../../types/index";
+import { useCustomerStore } from "../../../store/customerStore";
 import { useForm } from "vee-validate";
-import { ICircuit } from "~~/types/index.ts";
-import dayjs from "dayjs";
+import Input from "~~/components/Forms/Input/Input.vue";
 import {
   Dialog,
   DialogPanel,
@@ -14,36 +13,35 @@ import {
 
 // get route param id
 const route = useRoute();
-const circuitId = route?.params?.circuitId || "0";
+const customerId = route?.params?.customerId || "0";
 
 const router = useRouter();
-const currentRoute = router.currentRoute.value.href;
 
 /* CARD */
-const circuitStore = useCircuitStore();
-const circuits = await useAsyncData(() => circuitStore.getCircuits());
-const circuitById = await useAsyncData(() =>
-  circuitStore.getCircuit(circuitId)
+const customerStore = useCustomerStore();
+const customers = await useAsyncData(() => customerStore.getCustomers());
+const customerById = await useAsyncData(() =>
+  customerStore.getCustomer(customerId)
 );
 
 /* MODAL */
-const circuit = ref<ICircuit | undefined | null>(
-  circuitById?.data?.value?.data
+const customer = ref<ICustomer | undefined | null>(
+  customerById?.data?.value?.data
 );
 
-const refetchCircuit = async () => {
-  const req = await circuitStore.getCircuit(circuitId);
+const refetchCustomer = async () => {
+  const req = await customerStore.getCustomer(customerId);
   const { data } = req;
-  circuit.value = data;
+  customer.value = data;
 };
 
 const { handleSubmit } = useForm({
-  initialValues: circuit,
+  initialValues: customer,
 });
 
-const submitCircuit = handleSubmit(async (values) => {
-  await circuitStore.updateCircuit(circuitId, { ...values });
-  await refetchCircuit();
+const submitCustomer = handleSubmit(async (values) => {
+  await customerStore.updateCustomer(customerId, { ...values });
+  await refetchCustomer();
   closeModal();
 });
 
@@ -55,13 +53,13 @@ const openModal = async () => {
 
 const closeModal = async () => {
   open.value = false;
-  await refetchCircuit();
+  await refetchCustomer();
 };
 
 /*DELETE*/
-const deleteCircuit = async (site: any) => {
-  await siteCircuit.deleteCircuit(circuit.id);
-  router.back();
+const deleteCustomer = async (customer: any) => {
+  await customerStore.deleteCustomer(customer.id);
+  router.push({ path: "/customers" });
 };
 </script>
 
@@ -72,22 +70,24 @@ const deleteCircuit = async (site: any) => {
     >
       <div class="my-4 text-center">
         <h2 class="font-bold text-xl max-w-[240px] m-auto leading-6 mb-2">
-          CIRCUIT Entity
+          CUSTOMER Entity
         </h2>
       </div>
       <div class="flex mb-3">
-        <span><strong>Name: </strong>{{ circuit?.name }}</span>
+        <span><strong>Name: </strong>{{ customer?.name }}</span>
       </div>
       <div class="flex mb-3">
-        <span
-          ><strong>Installation date: </strong
-          >{{ dayjs(circuit.installation_date).format("DD-MM-YYYY") }}</span
-        >
+        <span><strong>Email: </strong>{{ customer?.email }}</span>
       </div>
       <div class="flex mb-3">
-        <span><strong>Main: </strong>{{ circuit.is_main ? "Yes" : "No" }}</span>
+        <span><strong>VAT-Number: </strong>{{ customer?.vat_number }}</span>
       </div>
       <div class="flex ml-auto">
+        <NuxtLink
+          :to="`/customers/${customerId}/sites`"
+          class="mx-auto mr-1 bg-white border-2 border-black font-bold px-4 py-2 rounded-sm text-black hover:border-2 hover:border-black hover:bg-black hover:text-white"
+          >View SITES</NuxtLink
+        >
         <button
           type="button"
           @click="openModal()"
@@ -98,7 +98,7 @@ const deleteCircuit = async (site: any) => {
         </button>
         <button
           class="ml-1 bg-red-600 border-2 border-red-600 font-bold px-4 py-2 rounded-sm text-white hover:border-2 hover:border-black hover:bg-white hover:text-black"
-          @click="deleteCircuit(circuit)"
+          @click="deleteCustomer(customer)"
         >
           Delete
           <Icon size="18" name="simple-line-icons:trash" />
@@ -141,10 +141,10 @@ const deleteCircuit = async (site: any) => {
                 as="h3"
                 class="text-lg font-medium leading-6 text-gray-900"
               >
-                Edit CIRCUIT {{ circuit?.name }}
+                Edit CUSTOMER {{ customer?.name }}
               </DialogTitle>
 
-              <form @submit.prevent="submitCircuit" class="mt-5">
+              <form @submit.prevent="submitCustomer" class="mt-5">
                 <div class="">
                   <div class="col-span-1">
                     <Input
@@ -153,31 +153,29 @@ const deleteCircuit = async (site: any) => {
                       name="name"
                       id="name"
                       autocomplete="off"
-                      :model-value="circuit?.name"
+                      :model-value="customer?.name"
                       class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     />
                   </div>
                   <div class="col-span-1">
                     <Input
-                      label="Installation Date"
+                      label="Email"
                       type="text"
-                      name="installation_date"
-                      id="installation_date"
+                      name="email"
+                      id="email"
                       autocomplete="off"
-                      :model-value="
-                        dayjs(circuit.installation_date).format('DD-MM-YYYY')
-                      "
+                      :model-value="customer?.email"
                       class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     />
                   </div>
                   <div class="col-span-1">
                     <Input
-                      label="Main"
+                      label="Vat Number"
                       type="text"
-                      name="is_main"
-                      id="is_main"
+                      name="vat_number"
+                      id="vat_number"
                       autocomplete="off"
-                      :model-value="circuit?.is_main"
+                      :model-value="customer?.vat_number"
                       class="focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     />
                   </div>
@@ -205,12 +203,4 @@ const deleteCircuit = async (site: any) => {
       </div>
     </Dialog>
   </TransitionRoot>
-
-  <div class="flex">
-    <NuxtLink
-      :to="`/manager`"
-      class="mx-auto bg-white border-2 border-white font-bold px-4 py-2 rounded-sm text-black hover:border-2 hover:border-white hover:bg-black hover:text-white"
-      >Go to MANAGER</NuxtLink
-    >
-  </div>
 </template>

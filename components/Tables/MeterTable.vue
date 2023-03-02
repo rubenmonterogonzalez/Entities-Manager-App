@@ -5,7 +5,7 @@ import type { Header } from "vue3-easy-data-table";
 import Input from "~~/components/Forms/Input/Input.vue";
 import { useForm } from "vee-validate";
 import dayjs from "dayjs";
-import { IMeter } from '../../types/index';
+import { IMeter } from "../../types/index";
 import {
   Dialog,
   DialogPanel,
@@ -32,15 +32,16 @@ const search = ref("");
 
 /* FORM */
 const router = useRouter();
+const currentRoute = router.currentRoute.value.href
 const route = useRoute();
 const siteId = route?.params?.siteId || "0";
 
 const metersArray = computed(() => {
-  return meterStore.meter.filter(m => m.siteId === Number(siteId))
-})
+  return meterStore.meter.filter((m) => m.siteId === Number(siteId));
+});
 
 // Default Meter
-const emptyMeter = () =>({
+const emptyMeter = () => ({
   name: "",
   serial_number: "",
   installation_date: "",
@@ -118,9 +119,9 @@ const closeUpdateModal = async () => {
       <div>
         <button
           @click="openModal"
-          class="bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white text-sm whitespace-nowrap hover:border-2 hover:border-black hover:bg-white hover:text-black"
+          class="bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white text-lg whitespace-nowrap hover:border-2 hover:border-black hover:bg-white hover:text-black"
         >
-          New METER Entity
+          +
         </button>
       </div>
     </div>
@@ -151,6 +152,12 @@ const closeUpdateModal = async () => {
 
           <template #item-actions="meter">
             <div class="flex space-x-4 text-gray-500">
+              <NuxtLink
+                :to="`${currentRoute}/${meter.id}`"
+                class=""
+              >
+                <Icon size="18" name="simple-line-icons:eye" />
+              </NuxtLink>
               <button @click="openUpdateModal(meter)">
                 <Icon size="18" name="simple-line-icons:pencil" />
               </button>

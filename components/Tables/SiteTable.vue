@@ -5,7 +5,7 @@ import Input from "~~/components/Forms/Input/Input.vue";
 import { useCustomerStore } from "../../store/customerStore";
 import { ISite } from "../../types/index";
 import { useForm } from "vee-validate";
-import { onMounted } from 'vue';
+import { onMounted } from "vue";
 import {
   Dialog,
   DialogPanel,
@@ -38,20 +38,20 @@ const route = useRoute();
 const customerId = route?.params?.customerId || 0;
 
 const sitesArray = computed(() => {
-  return siteStore.site.filter(s => s.customerId === Number(customerId))
-})
+  return siteStore.site.filter((s) => s.customerId === Number(customerId));
+});
 
 // Default Site
 const emptySite = () => ({
-  name: '',
+  name: "",
   coordinates: {
     latitude: null,
     longitude: null,
   },
-  address: '',
-  post_code: '',
+  address: "",
+  post_code: "",
   customerId,
-})
+});
 
 // New or Updating Site
 const site = ref(emptySite());
@@ -124,9 +124,9 @@ const closeUpdateModal = async () => {
       <div>
         <button
           @click="openModal"
-          class="bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white text-sm whitespace-nowrap hover:border-2 hover:border-black hover:bg-white hover:text-black"
+          class="bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white text-xl whitespace-nowrap hover:border-2 hover:border-black hover:bg-white hover:text-black"
         >
-          New SITE Entity
+          +
         </button>
       </div>
     </div>
@@ -163,6 +163,12 @@ const closeUpdateModal = async () => {
 
           <template #item-actions="site">
             <div class="flex space-x-4 text-gray-500">
+              <NuxtLink
+                :to="`/customers/${customerId}/sites/${site.id}`"
+                class=""
+              >
+                <Icon size="18" name="simple-line-icons:eye" />
+              </NuxtLink>
               <button @click="openUpdateModal(site)">
                 <Icon size="18" name="simple-line-icons:pencil" />
               </button>
@@ -211,7 +217,7 @@ const closeUpdateModal = async () => {
                 as="h3"
                 class="mb-6 text-lg font-medium leading-6 text-gray-900"
               >
-                Create a new SITE Entity
+                Add a new SITE Entity
               </DialogTitle>
 
               <form @submit.prevent="handleSubmitSite" class="min-w-[300px]">
@@ -327,7 +333,7 @@ const closeUpdateModal = async () => {
                 class="min-w-[300px]"
               >
                 <div class="my-4 text-center"></div>
-                
+
                 <div class="mb-6">
                   <Input
                     v-model="site.name"
