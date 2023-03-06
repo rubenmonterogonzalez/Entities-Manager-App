@@ -29,11 +29,13 @@ const headers: Header[] = [
 
 //TEST
 const entitiesStore = useEntitiesStore();
-onMounted(() => {
-   entitiesStore.init()
+onMounted(async () => {
+   // entitiesStore.init()
+  await entitiesStore.fetchEntity("customers", 2)
+  console.log('store: ', entitiesStore)
 })
 
-// console.log(entitiesStore.sites)
+
 
 
 

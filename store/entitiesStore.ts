@@ -30,30 +30,31 @@ export const useEntitiesStore = defineStore("entities-store", {
         useToast().error(error.message)
       }
     },
-    async fetchEntity(entities: 'customers' | 'sites' | 'meters' | 'circuits', entity: number | string) {
+    async fetchEntity(entity: 'customers' | 'sites' | 'meters' | 'circuits', entityId: number | string) {
       try {
-        const promise = await $fetch(`/api/${entities}/${entity}`);
-        switch (entities) {
-          case 'customers':
-            this.customers = [promise] as ICustomer[];
-            break;
-          case 'sites':
-            this.sites = [promise] as ISite[];
-            break;
-          case 'meters':
-            this.meters = [promise] as IMeter[];
-            break;
-          case 'circuits':
-            this.circuits = [promise] as ICircuit[];
-            break;
-        }
+        const { data } = await $fetch(`/api/${entity}/${entityId}`);
+        this[entity].push(data)
+        // switch (entity) {
+        //   case 'customers':
+        //     this.customers = [promise] as ICustomer[];
+        //     break;
+        //   case 'sites':
+        //     this.sites = [promise] as ISite[];
+        //     break;
+        //   case 'meters':
+        //     this.meters = [promise] as IMeter[];
+        //     break;
+        //   case 'circuits':
+        //     this.circuits = [promise] as ICircuit[];
+        //     break;
+        // }
       } catch (error: any) {
         useToast().error(error.message);
       }
     },
     async fetchEntityByEntities(entities:'sites' | 'meters' | 'circuits', entity: 'customerId' | 'siteId' | 'meterId' | 'circuitId', entityId: string | number) {
       try {
-        const data = await $fetch(`/api/${entities}/${entity}/${entityId}`);
+        const data = await $fetch(`/api/${entities}`, { body: { meterId: 1 } });
         return data;
       } catch (error: any) {
         useToast().error(error.message);
