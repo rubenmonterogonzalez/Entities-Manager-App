@@ -1,9 +1,9 @@
-import Customer from "../../models/customers";
+import Customer from "~~/server/models/customers";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
-  const id = event.context.params?.id;
+  const id = event.context.params?.customerId;
 
   try {
     const customer = await Customer.findByPk(id);

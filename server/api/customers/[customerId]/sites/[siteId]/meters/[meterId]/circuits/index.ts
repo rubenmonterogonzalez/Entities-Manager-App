@@ -2,7 +2,6 @@ import Circuit from '~~/server/models/circuits'
 
 export default defineEventHandler(async (event) => {
   const meterId = event.context.params?.meterId;
-console.log(meterId)
   try {
     if (!meterId) {
       return {

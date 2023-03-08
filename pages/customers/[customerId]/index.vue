@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ICustomer } from "../../../types/index";
 import { useCustomerStore } from "../../../store/customerStore";
+import { useSiteStore } from '../../../store/siteStore';
 import { useForm } from "vee-validate";
 import Input from "~~/components/Forms/Input/Input.vue";
 import {
@@ -16,6 +17,11 @@ const route = useRoute();
 const customerId = route?.params?.customerId || "0";
 
 const router = useRouter();
+
+/* GET QUERY */
+const siteStore = useSiteStore();
+let [sites, meters, circuits] = route.query.with.split(".");
+sites = siteStore.getSitesByCustomerId(customerId)
 
 /* CARD */
 const customerStore = useCustomerStore();

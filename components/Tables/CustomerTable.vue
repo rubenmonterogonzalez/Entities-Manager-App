@@ -1,13 +1,8 @@
 <script lang="ts" setup>
-import { useCircuitStore } from "../../store/circuitStore";
-import { useMeterStore } from "../../store/meterStore";
 import type { Header } from "vue3-easy-data-table";
 import Input from "~~/components/Forms/Input/Input.vue";
-import DateInput from "~~/components/Forms/Input/DateInput.vue";
-import { onMounted } from "vue";
 import { useForm } from "vee-validate";
-import dayjs from "dayjs";
-import { ICircuit } from "../../types/index";
+import { onMounted } from "vue";
 import {
   Dialog,
   DialogPanel,
@@ -15,73 +10,73 @@ import {
   TransitionRoot,
   TransitionChild,
 } from "@headlessui/vue";
+import { useEntitiesStore } from "../../store/entitiesStore";
+import { useCustomerStore } from "../../store/customerStore";
+import { ICustomer } from "../../types/index";
 
 /* TABLE */
 const headers: Header[] = [
   { text: "ID", value: "id", width: 25 },
   { text: "NAME", value: "name", width: 100 },
-  { text: "INSTALLATION DATE", value: "installation_date", width: 100 },
-  { text: "MAIN", value: "is_main", width: 100 },
+  { text: "EMAIL", value: "email", width: 150 },
+  { text: "VAT NUMBER", value: "vat_number", width: 100 },
   { text: "ACTIONS", value: "actions", width: 25 },
 ];
 
-const circuitStore = useCircuitStore();
-const meterStore = useMeterStore();
+//TEST
+const entitiesStore = useEntitiesStore();
+const customerStore = useCustomerStore();
 
-const circuits = await useAsyncData(() => circuitStore.getCircuits());
-const meters = await useAsyncData(() => meterStore.getMeters());
+onMounted(async () => {
+  entitiesStore.init();
+});
+
+const customers = await customerStore.getCustomers();
+
 const search = ref("");
 
 /* FORM */
-const router = useRouter();
-const currentRoute = router.currentRoute.value.href;
-const route = useRoute();
-const meterId = route?.params?.meterId;
-
-const circuitsArray = computed(() => {
-  return circuitStore.circuit.filter((c) => c.meterId === Number(meterId));
-});
-
-// Default Circuit
-const emptyCircuit = () => ({
+// Default Customer
+const emptyCustomer = () => ({
   name: "",
-  installation_date: "",
-  is_main: true,
-  meterId,
+  email: "",
+  vat_number: "",
 });
 
-// New or Updating Circuit
-const circuit = ref(emptyCircuit());
+// New or Updating Customer
+const customer = ref(emptyCustomer());
 
-const handleSubmit = async () => {
+const handleSubmitCustomer = async () => {
   try {
-    await circuitStore.addCircuit(circuit.value);
+    await customerStore.addCustomer(customer.value);
     closeModal();
   } catch (error) {
     console.log(error);
   }
 };
 
+/* MODAL NEW CUSTOMER */
 const open = ref(false);
 
 const openModal = () => {
-  circuit.value = emptyCircuit();
+  customer.value = emptyCustomer();
   open.value = true;
 };
-const closeModal = () => {
+const closeModal = async () => {
   open.value = false;
 };
 
+/* MODAL UPDATE CUSTOMER */
 const update = ref(false);
 
 const handleUpdate = async () => {
-  await circuitStore.updateCircuit(circuit.value);
+  await customerStore.updateCustomer(customer.value.id, customer.value);
   closeUpdateModal();
 };
 
-const openUpdateModal = (circuitToUpdate: ICircuit) => {
-  if (circuitToUpdate) {
-    circuit.value = JSON.parse(JSON.stringify({ ...circuitToUpdate }));
+const openUpdateModal = (customerToUpdate: ICustomer) => {
+  if (customerToUpdate) {
+    customer.value = JSON.parse(JSON.stringify({ ...customerToUpdate }));
   }
   update.value = true;
 };
@@ -92,7 +87,7 @@ const closeUpdateModal = async () => {
 </script>
 
 <template>
-  <section class="bg-black min-h-[50vh] px-5 mx-auto pt-2">
+  <section class="bg-black px-5 mx-auto pt-2">
     <div
       class="bg-white border-[1px] border-gray-300 flex flex-col items-center justify-between mt-5 px-4 py-2 space-y-2 xs:space-y-0 xs:flex-row"
     >
@@ -118,7 +113,7 @@ const closeUpdateModal = async () => {
       <div>
         <button
           @click="openModal"
-          class="bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white text-lg whitespace-nowrap hover:border-2 hover:border-black hover:bg-white hover:text-black"
+          class="bg-black border-2 border-black font-bold px-4 py-2 rounded-sm text-white text-xl whitespace-nowrap hover:border-2 hover:border-black hover:bg-white hover:text-black"
         >
           +
         </button>
@@ -129,11 +124,11 @@ const closeUpdateModal = async () => {
       <ClientOnly>
         <EasyDataTable
           :search-value="search"
-          empty-message="No Circuit Found. Create new Circuit"
+          empty-message="No Customer Found. Create new Customer"
           theme-color="#f97316"
           table-class-name="eztble"
           :headers="headers"
-          :items="circuitsArray"
+          :items="entitiesStore.customers"
           alternating
         >
           <template #item-id="{ id }">
@@ -142,22 +137,22 @@ const closeUpdateModal = async () => {
           <template #item-name="{ name }">
             <span>{{ name }}</span>
           </template>
-          <template #item-installation_date="{ installation_date }">
-            <span>{{ dayjs(installation_date).format("DD-MM-YYYY") }}</span>
+          <template #item-email="{ email }">
+            <span>{{ email }}</span>
           </template>
-          <template #item-is_main="{ is_main }">
-            <span>{{ is_main ? "Yes" : "No" }}</span>
+          <template #item-vat_number="{ vat_number }">
+            <span>{{ vat_number }}</span>
           </template>
 
-          <template #item-actions="circuit">
+          <template #item-actions="customer">
             <div class="flex space-x-4 text-gray-500">
-              <NuxtLink :to="`${currentRoute}/${circuit.id}`" class="">
+              <NuxtLink :to="{ path: `/customers/${customer.id}`, query: { with: 'sites.meters.circuits', split: 'true' } }" class="">
                 <Icon size="18" name="simple-line-icons:eye" />
               </NuxtLink>
-              <button @click="openUpdateModal(circuit)">
+              <button @click="openUpdateModal(customer)">
                 <Icon size="18" name="simple-line-icons:pencil" />
               </button>
-              <button @click="meterStore.deleteMeter(circuit.id)">
+              <button @click="customerStore.deleteCustomer(customer.id)">
                 <Icon size="18" name="simple-line-icons:trash" />
               </button>
             </div>
@@ -167,7 +162,7 @@ const closeUpdateModal = async () => {
     </div>
   </section>
 
-  <!-- /* MODAL NEW METER  */ -->
+  <!-- MODAL NEW CUSTOMER -->
   <TransitionRoot :show="open" as="template">
     <Dialog as="div" @close="closeModal" class="relative z-10">
       <TransitionChild
@@ -202,15 +197,18 @@ const closeUpdateModal = async () => {
                 as="h3"
                 class="mb-6 text-lg font-medium leading-6 text-gray-900"
               >
-                Create a new CIRCUIT Entity
+                Add a new CUSTOMER Entity
               </DialogTitle>
 
-              <form @submit.prevent="handleSubmit" class="min-w-[300px]">
+              <form
+                @submit.prevent="handleSubmitCustomer"
+                class="min-w-[300px]"
+              >
                 <div class="my-4 text-center"></div>
 
                 <div class="mb-6">
                   <input
-                    v-model="circuit.name"
+                    v-model="customer.name"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Name"
@@ -220,24 +218,23 @@ const closeUpdateModal = async () => {
                 </div>
                 <div class="mb-6">
                   <input
-                    v-model="circuit.installation_date"
-                    type="date"
+                    v-model="customer.email"
+                    type="email"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
-                    placeholder="Installation Date"
+                    placeholder="Email"
                     autocomplete="Off"
                     required
                   />
                 </div>
-                <label class="text-lg">Main</label>
-                <div>
+                <div class="mb-6">
                   <input
-                    type="checkbox"
-                    name="is_main"
-                    v-model="circuit.is_main"
+                    v-model="customer.vat_number"
+                    type="text"
+                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+                    placeholder="Vat Number"
+                    autocomplete="Off"
+                    required
                   />
-                  <label for="is_main" class="ml-1">{{
-                    circuit.is_main ? "Yes" : "No"
-                  }}</label>
                 </div>
                 <button
                   type="submit"
@@ -253,7 +250,7 @@ const closeUpdateModal = async () => {
     </Dialog>
   </TransitionRoot>
 
-  <!-- /* MODAL UPDATE METER  */ -->
+  <!-- MODAL UPDATE CUSTOMER -->
   <TransitionRoot :show="update" as="template">
     <Dialog as="div" @close="closeUpdateModal" class="relative z-10">
       <TransitionChild
@@ -288,15 +285,19 @@ const closeUpdateModal = async () => {
                 as="h3"
                 class="mb-6 text-lg font-medium leading-6 text-gray-900"
               >
-                Update CIRCUIT Entity
+                Update CUSTOMER Entity
               </DialogTitle>
 
-              <form @submit.prevent="handleUpdate" class="min-w-[300px]">
+              <form
+                @submit.prevent="handleUpdate"
+                ref="form"
+                class="min-w-[300px]"
+              >
                 <div class="my-4 text-center"></div>
 
                 <div class="mb-6">
                   <Input
-                    v-model="circuit.name"
+                    v-model="customer.name"
                     type="text"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
                     placeholder="Name"
@@ -305,23 +306,24 @@ const closeUpdateModal = async () => {
                   />
                 </div>
                 <div class="mb-6">
-                  <DateInput
-                    v-model="circuit.installation_date"
+                  <Input
+                    v-model="customer.email"
+                    type="email"
                     class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
-                    placeholder="Installation Date"
+                    placeholder="Email"
+                    autocomplete="Off"
+                    required
                   />
                 </div>
-                <label class="text-lg">Main</label>
-                <div class="flex w-10">
+                <div class="mb-6">
                   <Input
-                    class="mr-auto"
-                    type="checkbox"
-                    name="is_main"
-                    v-model="circuit.is_main"
+                    v-model="customer.vat_number"
+                    type="text"
+                    class="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+                    placeholder="Vat Number"
+                    autocomplete="Off"
+                    required
                   />
-                  <label for="is_main" class="mt-[-6px]">{{
-                    circuit.is_main ? "Yes" : "No"
-                  }}</label>
                 </div>
                 <button
                   type="submit"

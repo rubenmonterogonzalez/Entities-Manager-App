@@ -27,9 +27,9 @@ export const useCircuitStore = defineStore("circuit-store", {
         useToast().error(error.message);
       }
     },
-    async getCircuitsByMeterId(meterId: string | number | string[] | number[]) {
+    async getCircuitsByMeterId(meterId: string | number, siteId: string | number, customerId: string | number) {
       try {
-        let data = await $fetch<ICircuit>(`/api/circuits/meterId/${meterId}`);
+        let data = await $fetch<ICircuit>(`/api/customers/${customerId}/sites/${siteId}/meters/${meterId}/circuits`);
         this.selectedCircuit = data;
         return data as ICircuit;
       } catch (error: any) {

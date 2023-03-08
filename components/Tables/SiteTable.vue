@@ -15,7 +15,6 @@ import {
 } from "@headlessui/vue";
 import { useEntitiesStore } from '../../store/entitiesStore';
 
-
 /* TABLE */
 const headers: Header[] = [
   { text: "ID", value: "id", width: 25 },
@@ -29,30 +28,22 @@ const headers: Header[] = [
 
 //TEST
 const entitiesStore = useEntitiesStore();
+const siteStore = useSiteStore();
+
 onMounted(async () => {
-   // entitiesStore.init()
-  await entitiesStore.fetchEntity("customers", 2)
-  console.log('store: ', entitiesStore)
+   entitiesStore.init()
 })
 
-
-
-
-
-// const siteStore = useSiteStore();
-// const customerStore = useCustomerStore();
-
-// const sites = await useAsyncData(() => siteStore.getSites());
-// const customers = await useAsyncData(() => customerStore.getCustomers());
 const search = ref("");
 
 /* FORM */
 const router = useRouter();
 const route = useRoute();
+
 const customerId = route?.params?.customerId || 0;
 
 const sitesArray = computed(() => {
-  // return siteStore.site.filter((s) => s.customerId === Number(customerId));
+  return entitiesStore.sites.filter((s) => s.customerId === Number(customerId));
 });
 
 // Default Site
@@ -153,7 +144,7 @@ const closeUpdateModal = async () => {
           theme-color="#f97316"
           table-class-name="eztble"
           :headers="headers"
-          :items="entitiesStore.sites"
+          :items="sitesArray"
           alternating
         >
           <template #item-id="{ id }">

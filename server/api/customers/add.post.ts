@@ -1,4 +1,4 @@
-import Customer from "../../models/customers";
+import Customer from "~~/server/models/customers";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)

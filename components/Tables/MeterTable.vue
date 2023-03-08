@@ -34,7 +34,7 @@ const search = ref("");
 const router = useRouter();
 const currentRoute = router.currentRoute.value.href
 const route = useRoute();
-const siteId = route?.params?.siteId || "0";
+const siteId = route?.params?.siteId;
 
 const metersArray = computed(() => {
   return meterStore.meter.filter((m) => m.siteId === Number(siteId));

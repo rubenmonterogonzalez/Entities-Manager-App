@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import CustomerForm from "~~/components/Forms/CustomerForm.vue";
+import CustomerTable from "~~/components/Tables/CustomerTable.vue";
 </script>
 <template>
-  <CustomerForm />
+  <CustomerTable />
 </template>

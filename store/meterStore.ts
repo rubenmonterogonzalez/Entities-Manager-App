@@ -27,9 +27,9 @@ export const useMeterStore = defineStore("meter-store", {
         useToast().error(error.message);
       }
     },
-    async getMetersBySiteId(siteId: string | number | string[] | number[]) {
+    async getMetersBySiteId(siteId: string | number, customerId: string | string) {
       try {
-        let data = await $fetch<IMeter>(`/api/meters/siteId/${siteId}`);
+        let data = await $fetch<IMeter>(`/api/customers/${customerId}/sites/${siteId}/meters`);
         this.selectedMeter = data;
         return data as IMeter;
       } catch (error: any) {

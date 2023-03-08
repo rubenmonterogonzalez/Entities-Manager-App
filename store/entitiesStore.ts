@@ -14,8 +14,8 @@ export const useEntitiesStore = defineStore("entities-store", {
     async init() {
       if (this.initialised) return
       await this.fetchEntities(),
-      await this.fetchEntity(),
-      await this.fetchEntityByEntities(),
+      // await this.fetchEntity(),
+      // await this.fetchEntityByEntities(),
       this.initialised = true
     },
     async fetchEntities(entities = ['customers', 'sites', 'meters', 'circuits']) {
@@ -30,36 +30,22 @@ export const useEntitiesStore = defineStore("entities-store", {
         useToast().error(error.message)
       }
     },
-    async fetchEntity(entity: 'customers' | 'sites' | 'meters' | 'circuits', entityId: number | string) {
-      try {
-        const { data } = await $fetch(`/api/${entity}/${entityId}`);
-        this[entity].push(data)
-        // switch (entity) {
-        //   case 'customers':
-        //     this.customers = [promise] as ICustomer[];
-        //     break;
-        //   case 'sites':
-        //     this.sites = [promise] as ISite[];
-        //     break;
-        //   case 'meters':
-        //     this.meters = [promise] as IMeter[];
-        //     break;
-        //   case 'circuits':
-        //     this.circuits = [promise] as ICircuit[];
-        //     break;
-        // }
-      } catch (error: any) {
-        useToast().error(error.message);
-      }
-    },
-    async fetchEntityByEntities(entities:'sites' | 'meters' | 'circuits', entity: 'customerId' | 'siteId' | 'meterId' | 'circuitId', entityId: string | number) {
-      try {
-        const data = await $fetch(`/api/${entities}`, { body: { meterId: 1 } });
-        return data;
-      } catch (error: any) {
-        useToast().error(error.message);
-      }
-    },
+    // async fetchEntity(entity: 'customers' | 'sites' | 'meters' | 'circuits', entityId: number | string) {
+    //   try {
+    //     const { data } = await $fetch(`/api/${entity}/${entityId}`);
+    //     this[entity].push(data)
+    //   } catch (error: any) {
+    //     useToast().error(error.message);
+    //   }
+    // },
+    // async fetchEntityByEntities(entities:'sites' | 'meters' | 'circuits', entity: 'customerId' | 'siteId' | 'meterId' | 'circuitId', entityId: string | number) {
+    //   try {
+    //     const data = await $fetch(`/api/${entities}`, { body: { meterId: 1 } });
+    //     return data;
+    //   } catch (error: any) {
+    //     useToast().error(error.message);
+    //   }
+    // },
     async addEntity(entity = 'sites') {
       // api call
       await this.fetchEntities([entity])
