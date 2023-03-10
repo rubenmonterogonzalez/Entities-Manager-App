@@ -30,14 +30,14 @@ export const useEntitiesStore = defineStore("entities-store", {
         useToast().error(error.message)
       }
     },
-    // async fetchEntity(entity: 'customers' | 'sites' | 'meters' | 'circuits', entityId: number | string) {
-    //   try {
-    //     const { data } = await $fetch(`/api/${entity}/${entityId}`);
-    //     this[entity].push(data)
-    //   } catch (error: any) {
-    //     useToast().error(error.message);
-    //   }
-    // },
+    async fetchEntity(entity: 'customers' | 'sites' | 'meters' | 'circuits', entityId: number | string) {
+      try {
+        const { data } = await $fetch(`/api/${entity}/${entityId}`);
+        this[entity].push(data)
+      } catch (error: any) {
+        useToast().error(error.message);
+      }
+    },
     // async fetchEntityByEntities(entities:'sites' | 'meters' | 'circuits', entity: 'customerId' | 'siteId' | 'meterId' | 'circuitId', entityId: string | number) {
     //   try {
     //     const data = await $fetch(`/api/${entities}`, { body: { meterId: 1 } });
@@ -52,6 +52,6 @@ export const useEntitiesStore = defineStore("entities-store", {
     }
   },
   getters: {
-    
+
   }
 })
