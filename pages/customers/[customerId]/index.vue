@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ICustomer } from "../../../types/index";
 import { useCustomerStore } from "../../../store/customerStore";
-import { useSiteStore } from '../../../store/siteStore';
+import { useSiteStore } from "../../../store/siteStore";
+import { useMeterStore } from "../../../store/meterStore";
+import { useCircuitStore } from "../../../store/circuitStore";
 import { useForm } from "vee-validate";
 import Input from "~~/components/Forms/Input/Input.vue";
+import { useEntitiesStore } from "../../../store/entitiesStore";
 import {
   Dialog,
   DialogPanel,
@@ -14,14 +17,42 @@ import {
 
 // get route param id
 const route = useRoute();
-const customerId = route?.params?.customerId || "0";
+const customerId = route?.params?.customerId;
 
 const router = useRouter();
 
 /* GET QUERY */
-const siteStore = useSiteStore();
-let [sites, meters, circuits] = route.query.with.split(".");
-sites = siteStore.getSitesByCustomerId(customerId)
+const entitiesStore = useEntitiesStore();
+onMounted(async () => {
+  await entitiesStore.init();
+});
+
+const entitiesTree = computed(() => {
+  return entitiesStore.customers
+    .filter((customer) => customer.id === Number(customerId))
+    .map((customer) => ({
+      ...customer,
+      sites: entitiesStore.sites
+        .filter((site) => site.customerId === Number(customer.id))
+        .map((site) => ({
+          ...site,
+          meters: entitiesStore.meters
+            .filter((meter) => meter.siteId === Number(site.id))
+            .map((meter) => ({
+              ...meter,
+              circuits: entitiesStore.circuits
+                .filter((circuit) => circuit.meterId === Number(meter.id))
+                .map((circuit) => ({
+                  ...circuit,
+                })),
+            })),
+        })),
+    }));
+});
+
+watchEffect(() => {
+  console.log(entitiesTree.value);
+});
 
 /* CARD */
 const customerStore = useCustomerStore();

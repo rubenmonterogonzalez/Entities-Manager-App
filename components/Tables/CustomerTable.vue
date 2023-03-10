@@ -146,7 +146,14 @@ const closeUpdateModal = async () => {
 
           <template #item-actions="customer">
             <div class="flex space-x-4 text-gray-500">
-              <NuxtLink :to="{ path: `/customers/${customer.id}`, query: { with: 'sites.meters.circuits', split: 'true' } }" class="">
+              <NuxtLink 
+                :to="{ 
+                  path: `/customers/${customer.id}`, 
+                  query: { 
+                    with: 'sites.meters.circuits',
+                    split: 'true' 
+                  } 
+                }">
                 <Icon size="18" name="simple-line-icons:eye" />
               </NuxtLink>
               <button @click="openUpdateModal(customer)">
