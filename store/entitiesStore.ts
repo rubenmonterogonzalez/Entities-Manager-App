@@ -52,6 +52,6 @@ export const useEntitiesStore = defineStore("entities-store", {
     }
   },
   getters: {
-
+    
   }
 })
